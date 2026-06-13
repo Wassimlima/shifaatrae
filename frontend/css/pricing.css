@@ -1,0 +1,43 @@
+.pricing-page { padding: 4rem 0; }
+.pricing-header { text-align: center; margin-bottom: 3rem; }
+.pricing-header .label {
+  display: inline-block; background: var(--primary-light); color: var(--primary);
+  border-radius: var(--radius-full); padding: 0.25rem 1rem; font-size: 0.8rem; font-weight: 700;
+  margin-bottom: 1rem;
+}
+.pricing-header h1 { font-size: 2.2rem; font-weight: 900; color: var(--text); margin-bottom: 0.75rem; }
+.pricing-header p { color: var(--muted); font-size: 1rem; }
+.pricing-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;
+  align-items: start;
+}
+.pricing-card {
+  background: white; border: 2px solid var(--border); border-radius: var(--radius-xl);
+  padding: 2rem; transition: all var(--transition); position: relative;
+}
+.pricing-card.featured {
+  border-color: var(--primary); box-shadow: 0 8px 40px hsla(199,89%,48%,0.2);
+  transform: scale(1.02);
+}
+.pricing-popular {
+  position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+  background: var(--primary); color: white; border-radius: var(--radius-full);
+  padding: 0.25rem 1rem; font-size: 0.75rem; font-weight: 700; white-space: nowrap;
+  display: flex; align-items: center; gap: 0.3rem;
+}
+.pricing-plan { font-size: 0.8rem; font-weight: 600; color: var(--muted); margin-bottom: 0.75rem; display: flex; align-items: center; justify-content: space-between; }
+.pricing-price { margin-bottom: 1.5rem; }
+.pricing-price strong { font-size: 2.8rem; font-weight: 900; color: var(--text); }
+.pricing-price span { font-size: 0.85rem; color: var(--muted); }
+.pricing-features { list-style: none; margin-bottom: 1.75rem; display: flex; flex-direction: column; gap: 0.6rem; }
+.pricing-features li {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.875rem; color: var(--text);
+}
+.pricing-features li::before { content: '✓'; color: var(--secondary); font-weight: 700; flex-shrink: 0; }
+.pricing-card .btn { width: 100%; justify-content: center; }
+
+@media (max-width: 768px) {
+  .pricing-grid { grid-template-columns: 1fr; }
+  .pricing-card.featured { transform: none; }
+}

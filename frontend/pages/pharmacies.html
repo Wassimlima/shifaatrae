@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الصيدليات — شفاء ديزاد</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/pharmacies.css">
+</head>
+<body>
+<nav class="navbar">
+  <a href="../index.html" class="navbar-brand">
+    <div class="logo-icon" style="background:linear-gradient(135deg,#10b981,#14b8a6);border-radius:14px;width:42px;height:42px;display:flex;align-items:center;justify-content:center;">
+      <div style="width:18px;height:18px;border:3px solid white;border-radius:6px;transform:rotate(45deg);position:relative;"><div style="position:absolute;top:50%;left:50%;width:8px;height:8px;background:white;border-radius:2px;transform:translate(-50%,-50%);"></div></div>
+    </div>
+    <span>شفاء<span style="color:var(--primary)">ديزاد</span></span>
+  </a>
+  <ul class="navbar-links">
+    <li><a href="../index.html">الرئيسية</a></li>
+    <li><a href="search.html">الأدوية والمستلزمات</a></li>
+    <li><a href="pharmacies.html" class="active">الصيدليات</a></li>
+    <li><a href="donations.html">التضامن الصحي</a></li>
+    <li><a href="labs.html">مخابر التحاليل</a></li>
+    <li><a href="pricing.html">الاشتراكات</a></li>
+  </ul>
+  <div class="navbar-actions">
+    <a href="contact.html" class="btn btn-ghost btn-sm">تواصل معنا</a>
+    <a href="login.html" class="btn btn-primary btn-sm" id="nav-login-btn">تسجيل الدخول</a>
+  </div>
+  <button class="navbar-toggle" id="navbar-toggle" aria-label="القائمة"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="../index.html">🏠 الرئيسية</a>
+  <a href="search.html">🔍 الأدوية والمستلزمات</a>
+  <a href="pharmacies.html">🏥 الصيدليات</a>
+  <a href="donations.html">🤝 التضامن الصحي</a>
+  <a href="labs.html">🧪 مخابر التحاليل</a>
+  <a href="pricing.html">💳 الاشتراكات</a>
+  <a href="contact.html">📞 تواصل معنا</a>
+  <a href="login.html">🔐 تسجيل الدخول</a>
+</div>
+
+<section class="page-hero" style="background:linear-gradient(135deg,#10b981,#059669);color:white;padding:2.5rem 0">
+  <div class="container">
+    <h1 style="font-size:1.8rem;font-weight:900;margin-bottom:.4rem">🏥 الصيدليات</h1>
+    <p style="opacity:.85">ابحث عن الصيدليات المفتوحة وصيدليات الدوام الليلي في ولايتك</p>
+  </div>
+</section>
+
+<section class="section" style="padding-bottom:0">
+  <div class="container">
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;align-items:center;margin-bottom:1.5rem">
+      <select id="f-wilaya" class="input" style="min-width:160px">
+        <option value="">كل الولايات</option>
+      </select>
+      <select id="f-status" class="input" style="min-width:140px">
+        <option value="">كل الحالات</option>
+        <option value="open">مفتوحة</option>
+        <option value="closed">مغلقة</option>
+      </select>
+      <label style="display:flex;align-items:center;gap:.4rem;font-size:.875rem;cursor:pointer">
+        <input type="checkbox" id="f-permanence"> دوام ليلي
+      </label>
+      <button class="btn btn-primary btn-sm" onclick="loadPharmacies()">بحث</button>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div id="pharmacies-count" style="font-size:.85rem;color:var(--muted);margin-bottom:1rem"></div>
+    <div id="pharmacies-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem">
+      <div class="skeleton" style="height:160px;border-radius:var(--radius-lg)"></div>
+      <div class="skeleton" style="height:160px;border-radius:var(--radius-lg)"></div>
+      <div class="skeleton" style="height:160px;border-radius:var(--radius-lg)"></div>
+    </div>
+  </div>
+</section>
+
+<div id="toast-container" class="toast-container"></div>
+<script src="../js/config.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/auth-redirects.js"></script>
+<script src="../js/main.js"></script>
+<script>
+const STATUS_LABELS = { open: 'مفتوحة', closed: 'مغلقة' };
+const STATUS_BADGE  = { open: 'badge-secondary', closed: 'badge-red' };
+
+function esc(s) { return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function populateWilayas() {
+  const sel = document.getElementById('f-wilaya');
+  if (!sel || typeof WILAYAS === 'undefined') return;
+  WILAYAS.forEach(w => { const o = document.createElement('option'); o.value = w; o.textContent = w; sel.appendChild(o); });
+}
+
+async function loadPharmacies() {
+  const grid  = document.getElementById('pharmacies-grid');
+  const count = document.getElementById('pharmacies-count');
+  grid.innerHTML = '<div class="skeleton" style="height:160px;border-radius:var(--radius-lg)"></div>'.repeat(3);
+
+  const wilaya     = document.getElementById('f-wilaya')?.value || '';
+  const status     = document.getElementById('f-status')?.value || '';
+  const permanence = document.getElementById('f-permanence')?.checked ? '1' : '';
+
+  const params = new URLSearchParams(window.location.search);
+  const urlStatus = params.get('status') || status;
+  const urlPerm   = params.get('permanence') || permanence;
+
+  try {
+    const p = {};
+    if (wilaya)   p.wilaya = wilaya;
+    if (urlStatus) p.status = urlStatus;
+    if (urlPerm)  p.permanence = urlPerm;
+
+    const data  = await api.get('/pharmacies/index.php', p);
+    const items = Array.isArray(data) ? data : (data.pharmacies || data.data || []);
+    if (count) count.textContent = `${items.length} صيدلية`;
+
+    if (!items.length) {
+      grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">🏥</div><p>لا توجد صيدليات لهذه المعايير</p></div>';
+      return;
+    }
+
+    grid.innerHTML = items.map(p => `
+      <div class="pharmacy-card" onclick="window.location.href=\'pharmacy-profile.html?id=${p.id}\'" style="background:white;border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;transition:all .3s;cursor:pointer">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.75rem">
+          <div>
+            <h3 style="font-weight:800;font-size:.95rem;margin-bottom:.2rem">${esc(p.name)}</h3>
+            <div style="font-size:.8rem;color:var(--muted)">📍 ${esc(p.city || '')}, ${esc(p.wilaya || '')}</div>
+          </div>
+          ${p.status ? `<span class="badge ${STATUS_BADGE[p.status] || 'badge-muted'}">${STATUS_LABELS[p.status] || esc(p.status)}</span>` : ''}
+        </div>
+        ${p.address ? `<div style="font-size:.8rem;color:var(--muted);margin-bottom:.6rem">🏠 ${esc(p.address)}</div>` : ''}
+        <div style="display:flex;gap:.75rem;flex-wrap:wrap">
+          ${p.phone ? `<a href="tel:${esc(p.phone)}" class="btn btn-outline btn-sm" style="font-size:.8rem">📞 ${esc(p.phone)}</a>` : ''}
+          ${p.permanence ? '<span class="badge badge-orange" style="font-size:.75rem">🌙 دوام ليلي</span>' : ''}
+        </div>
+      </div>`).join('');
+  } catch (err) {
+    grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">⚠️</div><p>تعذر التحميل</p></div>';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  populateWilayas();
+  const params = new URLSearchParams(window.location.search);
+  const status = params.get('status');
+  const perm   = params.get('permanence');
+  if (status) { const el = document.getElementById('f-status'); if (el) el.value = status; }
+  if (perm)   { const el = document.getElementById('f-permanence'); if (el) el.checked = true; }
+  loadPharmacies();
+});
+</script>
+</body>
+</html>

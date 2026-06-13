@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>بوابة المهنيين — شفاء ديزاد</title>
+  <link rel="stylesheet" href="../../css/main.css">
+  <style>
+    .portal-hero { background:linear-gradient(135deg,#10b981,#059669); color:white; padding:4rem 0; text-align:center; }
+    .portal-hero h1 { font-size:2.2rem; font-weight:900; margin-bottom:.75rem; }
+    .portal-hero p { font-size:1rem; opacity:.85; max-width:540px; margin:0 auto; }
+    .portal-cards { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:1.5rem; margin-top:3rem; }
+    .portal-card { background:white; border:2px solid var(--border); border-radius:var(--radius-xl); padding:2rem; text-align:center; transition:all .3s; text-decoration:none; color:inherit; display:block; }
+    .portal-card:hover { box-shadow:var(--shadow-lg); transform:translateY(-4px); border-color:var(--primary); }
+    .portal-card-icon { font-size:3rem; margin-bottom:1rem; }
+    .portal-card h3 { font-weight:900; margin-bottom:.5rem; }
+    .portal-card p  { font-size:.85rem; color:var(--muted); line-height:1.6; }
+    .portal-card .btn { margin-top:1.25rem; width:100%; display:block; text-align:center; }
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <a href="../../index.html" class="navbar-brand">
+    <div class="logo-icon" style="background:linear-gradient(135deg,#10b981,#14b8a6);border-radius:14px;width:42px;height:42px;display:flex;align-items:center;justify-content:center;">
+      <div style="width:18px;height:18px;border:3px solid white;border-radius:6px;transform:rotate(45deg);position:relative;"><div style="position:absolute;top:50%;left:50%;width:8px;height:8px;background:white;border-radius:2px;transform:translate(-50%,-50%);"></div></div>
+    </div>
+    <span>شفاء<span style="color:var(--primary)">ديزاد</span></span>
+  </a>
+  <ul class="navbar-links">
+    <li><a href="../../index.html">الرئيسية</a></li>
+    <li><a href="../search.html">الأدوية والمستلزمات</a></li>
+    <li><a href="../pharmacies.html">الصيدليات</a></li>
+    <li><a href="../donations.html">التضامن الصحي</a></li>
+    <li><a href="../labs.html">مخابر التحاليل</a></li>
+    <li><a href="../pricing.html">الاشتراكات</a></li>
+  </ul>
+  <div class="navbar-actions">
+    <a href="../contact.html" class="btn btn-ghost btn-sm">تواصل معنا</a>
+    <a href="../login.html" class="btn btn-primary btn-sm">تسجيل الدخول</a>
+  </div>
+  <button class="navbar-toggle" id="navbar-toggle" aria-label="القائمة"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="portal-hero">
+  <div class="container">
+    <span style="background:rgba(255,255,255,.2);border-radius:999px;padding:.3rem 1rem;font-size:.85rem;font-weight:700;display:inline-block;margin-bottom:1rem">للمهنيين الصحيين</span>
+    <h1>بوابة المهنيين الصحيين</h1>
+    <p>اختر نوع حسابك للوصول إلى لوحة التحكم الخاصة بك أو إنشاء حساب جديد</p>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <div class="portal-cards">
+      <a href="../login.html" class="portal-card" style="border-color:#a7f3d0">
+        <div class="portal-card-icon">🏥</div>
+        <h3>الصيدليات</h3>
+        <p>إدارة المخزون، الظهور أمام المرضى، والشراكة مع مزودي الأدوية</p>
+        <div class="btn btn-primary">دخول / تسجيل</div>
+      </a>
+      <a href="../login.html" class="portal-card" style="border-color:#ddd6fe">
+        <div class="portal-card-icon">🧪</div>
+        <h3>مخابر التحاليل</h3>
+        <p>عرض التحاليل المتاحة، الأسعار، وأوقات الانتظار</p>
+        <div class="btn btn-primary">دخول / تسجيل</div>
+      </a>
+      <a href="../login.html" class="portal-card" style="border-color:#bfdbfe">
+        <div class="portal-card-icon">💼</div>
+        <h3>مزودو الأدوية الطبيون</h3>
+        <p>تنبيهات السوق، طلبات الصيدليات، وشبكة الشراكات</p>
+        <div class="btn btn-primary">دخول / تسجيل</div>
+      </a>
+      <a href="../login.html" class="portal-card" style="border-color:#fde68a">
+        <div class="portal-card-icon">🩺</div>
+        <h3>المعدات الطبية</h3>
+        <p>باراصيدلية، أجهزة طبية، ومستلزمات طبية</p>
+        <div class="btn btn-primary">دخول / تسجيل</div>
+      </a>
+    </div>
+
+    <div style="text-align:center;margin-top:3rem">
+      <p style="font-size:.875rem;color:var(--muted);margin-bottom:1rem">هل تريد معرفة المزيد عن الباقات؟</p>
+      <a href="../pricing.html" class="btn btn-outline btn-lg">عرض الاشتراكات</a>
+    </div>
+  </div>
+</section>
+
+<div id="toast-container" class="toast-container"></div>
+<script src="../../js/config.js"></script>
+<script src="../../js/api.js"></script>
+<script src="../../js/auth-redirects.js"></script>
+<script src="../../js/main.js"></script>
+</body>
+</html>

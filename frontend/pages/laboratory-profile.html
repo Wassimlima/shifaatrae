@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ملف المخبر — شفاء ديزاد</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/pharmacies.css">
+  <style>
+    .profile-hero { background:linear-gradient(135deg,#6366f1,#4f46e5); color:white; padding:3rem 0 2rem; }
+    .profile-badge { display:inline-flex; align-items:center; gap:.5rem; background:rgba(255,255,255,.2); border-radius:999px; padding:.4rem 1rem; font-size:.8rem; font-weight:700; margin-bottom:1rem; }
+    .profile-name { font-size:2rem; font-weight:900; margin-bottom:.5rem; }
+    .profile-meta { display:flex; flex-wrap:wrap; gap:1rem; font-size:.9rem; opacity:.9; }
+    .profile-meta span { display:flex; align-items:center; gap:.35rem; }
+    .profile-body { max-width:900px; margin:0 auto; padding:2rem 1rem; }
+    .info-card { background:white; border:1.5px solid var(--border); border-radius:var(--radius-xl); padding:1.5rem; margin-bottom:1.5rem; }
+    .info-card h3 { font-size:1rem; font-weight:800; margin-bottom:1rem; color:#4f46e5; }
+    .info-row { display:flex; gap:.5rem; align-items:flex-start; padding:.5rem 0; border-bottom:1px solid var(--border-light,#f1f5f9); }
+    .info-row:last-child { border-bottom:none; }
+    .info-icon { font-size:1.1rem; flex-shrink:0; }
+    .social-links { display:flex; gap:.75rem; flex-wrap:wrap; margin-top:.5rem; }
+    .social-btn { display:inline-flex; align-items:center; gap:.4rem; padding:.4rem .9rem; border-radius:var(--radius); background:var(--muted-bg); color:var(--text); font-size:.82rem; font-weight:700; text-decoration:none; transition:all .2s; }
+    .social-btn:hover { background:#4f46e5; color:white; }
+    .analyses-toolbar { display:flex; gap:.75rem; flex-wrap:wrap; margin-bottom:1rem; }
+    .analyses-toolbar input, .analyses-toolbar select { flex:1; min-width:140px; padding:.5rem .75rem; border:1.5px solid var(--border); border-radius:var(--radius); font-family:var(--font); font-size:.85rem; }
+    .med-table { width:100%; border-collapse:collapse; font-size:.875rem; }
+    .med-table thead tr { border-bottom:2px solid var(--border); background:var(--muted-bg); }
+    .med-table th { padding:.65rem .75rem; text-align:right; font-weight:800; }
+    .med-table td { padding:.65rem .75rem; border-bottom:1px solid var(--border); }
+    .med-table tr:hover { background:#f8fafc; }
+    .pagination { display:flex; gap:.5rem; justify-content:center; margin-top:1.25rem; flex-wrap:wrap; }
+    .page-btn { padding:.4rem .85rem; border:1.5px solid var(--border); border-radius:var(--radius); cursor:pointer; font-weight:700; background:white; }
+    .page-btn.active { background:#4f46e5; color:white; border-color:#4f46e5; }
+    .empty-state { text-align:center; padding:3rem; color:var(--muted); }
+    .empty-icon { font-size:2.5rem; margin-bottom:.75rem; }
+    @media (max-width:600px) { .profile-name { font-size:1.4rem; } .med-table th:nth-child(n+4), .med-table td:nth-child(n+4) { display:none; } }
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <a href="../index.html" class="navbar-brand">
+    <div class="logo-icon" style="background:linear-gradient(135deg,#10b981,#14b8a6);border-radius:14px;width:42px;height:42px;display:flex;align-items:center;justify-content:center;">
+      <div style="width:18px;height:18px;border:3px solid white;border-radius:6px;transform:rotate(45deg);position:relative;"><div style="position:absolute;top:50%;left:50%;width:8px;height:8px;background:white;border-radius:2px;transform:translate(-50%,-50%);"></div></div>
+    </div>
+    <span>شفاء<span style="color:var(--primary)">ديزاد</span></span>
+  </a>
+  <ul class="navbar-links">
+    <li><a href="../index.html">الرئيسية</a></li>
+    <li><a href="search.html">الأدوية</a></li>
+    <li><a href="pharmacies.html">الصيدليات</a></li>
+    <li><a href="labs.html" class="active">المخابر</a></li>
+    <li><a href="donations.html">التضامن الصحي</a></li>
+    <li><a href="pricing.html">الاشتراكات</a></li>
+  </ul>
+  <div class="navbar-actions">
+    <a href="login.html" class="btn btn-primary btn-sm" id="nav-login-btn">تسجيل الدخول</a>
+  </div>
+</nav>
+
+<div id="page-loader" style="text-align:center;padding:5rem">
+  <div class="spinner" style="margin:0 auto;width:40px;height:40px;border-width:4px"></div>
+  <p style="margin-top:1rem;color:var(--muted)">جاري التحميل…</p>
+</div>
+
+<div id="profile-hero" style="display:none">
+  <section class="profile-hero">
+    <div class="container">
+      <div class="profile-badge">🧪 مخبر تحاليل</div>
+      <h1 class="profile-name" id="lab-name">—</h1>
+      <div class="profile-meta">
+        <span>📍 <span id="lab-wilaya">—</span> — <span id="lab-city">—</span></span>
+        <span id="lab-hours-meta" style="display:none">🕐 <span id="lab-hours-display">—</span></span>
+        <span id="lab-phone-meta" style="display:none">📞 <span id="lab-phone-display">—</span></span>
+      </div>
+    </div>
+  </section>
+
+  <div class="profile-body">
+    <div class="info-card">
+      <h3>📋 معلومات المخبر</h3>
+      <div class="info-row" id="row-address" style="display:none">
+        <span class="info-icon">🏠</span>
+        <div>
+          <div id="lab-address">—</div>
+          <a id="lab-map-link" href="#" target="_blank" style="font-size:.82rem;color:#4f46e5;font-weight:700">عرض على الخريطة ↗</a>
+        </div>
+      </div>
+      <div class="info-row" id="row-hours" style="display:none">
+        <span class="info-icon">🕐</span>
+        <div id="lab-hours">—</div>
+      </div>
+      <div class="info-row" id="row-phone" style="display:none">
+        <span class="info-icon">📞</span>
+        <a id="lab-phone" href="#" style="color:#4f46e5;font-weight:700">—</a>
+      </div>
+      <div class="info-row" id="row-email" style="display:none">
+        <span class="info-icon">✉️</span>
+        <a id="lab-email" href="#" style="color:#4f46e5">—</a>
+      </div>
+      <div class="info-row" id="row-website" style="display:none">
+        <span class="info-icon">🌐</span>
+        <a id="lab-website" href="#" target="_blank" style="color:#4f46e5">—</a>
+      </div>
+      <div class="info-row" id="row-social" style="display:none">
+        <span class="info-icon">🔗</span>
+        <div class="social-links" id="lab-socials"></div>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <h3>🔬 التحاليل المتوفرة</h3>
+      <div class="analyses-toolbar">
+        <input type="search" id="ana-search" placeholder="🔍 ابحث عن تحليل…" oninput="filterAnalyses()">
+        <select id="ana-category-filter" onchange="filterAnalyses()">
+          <option value="">كل الفئات</option>
+          <option value="blood">تحاليل الدم</option>
+          <option value="urine">تحاليل البول</option>
+          <option value="hormone">الهرمونات</option>
+          <option value="bacterio">الجرثومية</option>
+          <option value="radiology">الأشعة</option>
+          <option value="genetics">الجينات</option>
+          <option value="other">أخرى</option>
+        </select>
+        <select id="ana-avail-filter" onchange="filterAnalyses()">
+          <option value="">كل الحالات</option>
+          <option value="available">متوفر</option>
+          <option value="unavailable">غير متوفر</option>
+        </select>
+        <select id="ana-sort" onchange="filterAnalyses()">
+          <option value="name">ترتيب: الاسم</option>
+          <option value="category">ترتيب: الفئة</option>
+          <option value="price">ترتيب: السعر</option>
+        </select>
+      </div>
+
+      <div id="ana-count" style="font-size:.82rem;color:var(--muted);margin-bottom:.75rem"></div>
+      <table class="med-table">
+        <thead>
+          <tr>
+            <th>اسم التحليل</th>
+            <th>الفئة</th>
+            <th>المدة التقديرية</th>
+            <th>الحالة</th>
+            <th>السعر (دج)</th>
+            <th>آخر تحديث</th>
+          </tr>
+        </thead>
+        <tbody id="ana-tbody"></tbody>
+      </table>
+      <div id="ana-empty" class="empty-state" style="display:none">
+        <div class="empty-icon">🔬</div>
+        <p>لا توجد تحاليل مطابقة للبحث</p>
+      </div>
+      <div class="pagination" id="ana-pagination"></div>
+    </div>
+  </div>
+</div>
+
+<div id="profile-error" style="display:none;text-align:center;padding:4rem">
+  <div style="font-size:3rem;margin-bottom:1rem">❌</div>
+  <h2>المخبر غير موجود</h2>
+  <a href="labs.html" class="btn btn-primary" style="margin-top:1.5rem">← العودة للمخابر</a>
+</div>
+
+<script src="../js/config.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/main.js"></script>
+<script>
+  const CAT_LABELS = {
+    blood:'تحاليل الدم', urine:'تحاليل البول', hormone:'الهرمونات',
+    bacterio:'الجرثومية', radiology:'الأشعة', genetics:'الجينات', other:'أخرى'
+  };
+
+  let allAnalyses = [], currentPage = 1;
+  const PAGE_SIZE = 15;
+
+  function esc(s) { return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function fmtDate(d) { if (!d) return '—'; try { return new Date(d).toLocaleDateString('ar-DZ'); } catch { return d; } }
+
+  async function loadLaboratory() {
+    const params = new URLSearchParams(window.location.search);
+    const id = parseInt(params.get('id'));
+    if (!id) { showError(); return; }
+
+    try {
+      const data = await api.get('/labs/detail.php', { id });
+      const lab = data.data || data;
+      if (!lab || !lab.id) { showError(); return; }
+
+      document.title = `${lab.name} — شفاء ديزاد`;
+      document.getElementById('lab-name').textContent = lab.name || '—';
+      document.getElementById('lab-wilaya').textContent = lab.wilaya || '—';
+      document.getElementById('lab-city').textContent = lab.city || lab.commune || '—';
+
+      showIfSet('row-address', lab.address, () => {
+        document.getElementById('lab-address').textContent = lab.address;
+        const mapQ = encodeURIComponent(`${lab.name} ${lab.wilaya || ''} Algeria`);
+        document.getElementById('lab-map-link').href = `https://www.google.com/maps/search/${mapQ}`;
+      });
+      showIfSet('row-hours', lab.opening_hours || lab.hours, () => {
+        document.getElementById('lab-hours').textContent = lab.opening_hours || lab.hours;
+        document.getElementById('lab-hours-meta').style.display = 'flex';
+        document.getElementById('lab-hours-display').textContent = lab.opening_hours || lab.hours;
+      });
+      showIfSet('row-phone', lab.phone, () => {
+        const tel = document.getElementById('lab-phone');
+        tel.textContent = lab.phone;
+        tel.href = `tel:${lab.phone}`;
+        document.getElementById('lab-phone-meta').style.display = 'flex';
+        document.getElementById('lab-phone-display').textContent = lab.phone;
+      });
+      showIfSet('row-email', lab.email, () => {
+        const em = document.getElementById('lab-email');
+        em.textContent = lab.email;
+        em.href = `mailto:${lab.email}`;
+      });
+      showIfSet('row-website', lab.website, () => {
+        const ws = document.getElementById('lab-website');
+        ws.textContent = lab.website;
+        ws.href = lab.website;
+      });
+
+      const socials = [];
+      if (lab.facebook)  socials.push(`<a href="${esc(lab.facebook)}" target="_blank" class="social-btn">📘 Facebook</a>`);
+      if (lab.instagram) socials.push(`<a href="${esc(lab.instagram)}" target="_blank" class="social-btn">📷 Instagram</a>`);
+      if (lab.linkedin)  socials.push(`<a href="${esc(lab.linkedin)}" target="_blank" class="social-btn">💼 LinkedIn</a>`);
+      if (socials.length) {
+        document.getElementById('row-social').style.display = 'flex';
+        document.getElementById('lab-socials').innerHTML = socials.join('');
+      }
+
+      allAnalyses = Array.isArray(lab.analyses) ? lab.analyses : [];
+      filterAnalyses();
+
+      document.getElementById('page-loader').style.display = 'none';
+      document.getElementById('profile-hero').style.display = 'block';
+    } catch (err) {
+      console.error(err);
+      showError();
+    }
+  }
+
+  function showIfSet(rowId, value, cb) {
+    if (value) {
+      document.getElementById(rowId).style.display = 'flex';
+      cb();
+    }
+  }
+
+  function showError() {
+    document.getElementById('page-loader').style.display = 'none';
+    document.getElementById('profile-error').style.display = 'block';
+  }
+
+  function filterAnalyses() {
+    const q = (document.getElementById('ana-search')?.value || '').toLowerCase();
+    const cat = document.getElementById('ana-category-filter')?.value || '';
+    const avail = document.getElementById('ana-avail-filter')?.value || '';
+    const sort = document.getElementById('ana-sort')?.value || 'name';
+
+    let items = allAnalyses.filter(a => {
+      const name = ((a.name || a.analysis_name || '') + ' ' + (a.name_ar || '')).toLowerCase();
+      if (q && !name.includes(q)) return false;
+      if (cat && (a.category || '') !== cat) return false;
+      if (avail && (a.availability || '') !== avail) return false;
+      return true;
+    });
+
+    items.sort((a, b) => {
+      if (sort === 'name') return (a.name || a.analysis_name || '').localeCompare(b.name || b.analysis_name || '');
+      if (sort === 'category') return (a.category || '').localeCompare(b.category || '');
+      if (sort === 'price') return (parseFloat(a.price) || 0) - (parseFloat(b.price) || 0);
+      return 0;
+    });
+
+    currentPage = 1;
+    renderAnalyses(items);
+  }
+
+  function renderAnalyses(items) {
+    const count = items.length;
+    const total = allAnalyses.length;
+    const pages = Math.ceil(count / PAGE_SIZE) || 1;
+    const slice = items.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+
+    document.getElementById('ana-count').textContent =
+      count === total ? `${count} تحليل` : `${count} من ${total} تحليل`;
+
+    const tbody = document.getElementById('ana-tbody');
+    const empty = document.getElementById('ana-empty');
+
+    if (!slice.length) {
+      tbody.innerHTML = '';
+      empty.style.display = 'block';
+    } else {
+      empty.style.display = 'none';
+      tbody.innerHTML = slice.map(a => `
+        <tr>
+          <td><strong>${esc(a.name || a.analysis_name || '—')}</strong>
+            ${a.description ? `<div style="font-size:.78rem;color:var(--muted);margin-top:.15rem">${esc(a.description)}</div>` : ''}
+          </td>
+          <td>${esc(CAT_LABELS[a.category] || a.category || '—')}</td>
+          <td>${esc(a.duration || a.estimated_duration || '—')}</td>
+          <td><span class="badge ${a.availability === 'available' ? 'badge-secondary' : 'badge-red'}">${a.availability === 'available' ? 'متوفر' : 'غير متوفر'}</span></td>
+          <td>${a.price ? parseFloat(a.price).toLocaleString('ar-DZ') + ' دج' : '—'}</td>
+          <td style="font-size:.78rem;color:var(--muted)">${fmtDate(a.updated_at || a.last_updated)}</td>
+        </tr>
+      `).join('');
+    }
+
+    const pg = document.getElementById('ana-pagination');
+    pg.innerHTML = '';
+    if (pages > 1) {
+      for (let i = 1; i <= pages; i++) {
+        const btn = document.createElement('button');
+        btn.textContent = i;
+        btn.className = 'page-btn' + (i === currentPage ? ' active' : '');
+        btn.onclick = () => { currentPage = i; renderAnalyses(items); };
+        pg.appendChild(btn);
+      }
+    }
+  }
+
+  loadLaboratory();
+</script>
+</body>
+</html>

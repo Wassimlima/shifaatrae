@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مخابر التحاليل — شفاء ديزاد</title>
+  <link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+<nav class="navbar">
+  <a href="../index.html" class="navbar-brand">
+    <div class="logo-icon" style="background:linear-gradient(135deg,#10b981,#14b8a6);border-radius:14px;width:42px;height:42px;display:flex;align-items:center;justify-content:center;">
+      <div style="width:18px;height:18px;border:3px solid white;border-radius:6px;transform:rotate(45deg);position:relative;"><div style="position:absolute;top:50%;left:50%;width:8px;height:8px;background:white;border-radius:2px;transform:translate(-50%,-50%);"></div></div>
+    </div>
+    <span>شفاء<span style="color:var(--primary)">ديزاد</span></span>
+  </a>
+  <ul class="navbar-links">
+    <li><a href="../index.html">الرئيسية</a></li>
+    <li><a href="search.html">الأدوية والمستلزمات</a></li>
+    <li><a href="pharmacies.html">الصيدليات</a></li>
+    <li><a href="donations.html">التضامن الصحي</a></li>
+    <li><a href="labs.html" class="active">مخابر التحاليل</a></li>
+    <li><a href="pricing.html">الاشتراكات</a></li>
+  </ul>
+  <div class="navbar-actions">
+    <a href="contact.html" class="btn btn-ghost btn-sm">تواصل معنا</a>
+    <a href="login.html" class="btn btn-primary btn-sm" id="nav-login-btn">تسجيل الدخول</a>
+  </div>
+  <button class="navbar-toggle" id="navbar-toggle" aria-label="القائمة"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="../index.html">🏠 الرئيسية</a>
+  <a href="search.html">🔍 الأدوية والمستلزمات</a>
+  <a href="pharmacies.html">🏥 الصيدليات</a>
+  <a href="donations.html">🤝 التضامن الصحي</a>
+  <a href="labs.html">🧪 مخابر التحاليل</a>
+  <a href="pricing.html">💳 الاشتراكات</a>
+  <a href="contact.html">📞 تواصل معنا</a>
+  <a href="login.html">🔐 تسجيل الدخول</a>
+</div>
+
+<section style="background:linear-gradient(135deg,#7c3aed,#4f46e5);color:white;padding:2.5rem 0">
+  <div class="container">
+    <h1 style="font-size:1.8rem;font-weight:900;margin-bottom:.4rem">🧪 مخابر التحاليل</h1>
+    <p style="opacity:.85">ابحث عن مخابر التحاليل الطبية مع الأسعار وأوقات الانتظار</p>
+  </div>
+</section>
+
+<section class="section" style="padding-bottom:0">
+  <div class="container">
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;align-items:center;margin-bottom:1.5rem">
+      <input type="text" id="f-query" class="input" placeholder="اسم التحليل..." style="flex:2;min-width:180px">
+      <select id="f-wilaya" class="input" style="min-width:160px">
+        <option value="">كل الولايات</option>
+      </select>
+      <button class="btn btn-primary btn-sm" onclick="loadLabs()">بحث</button>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div id="labs-count" style="font-size:.85rem;color:var(--muted);margin-bottom:1rem"></div>
+    <div id="labs-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem">
+      <div class="skeleton" style="height:150px;border-radius:var(--radius-lg)"></div>
+      <div class="skeleton" style="height:150px;border-radius:var(--radius-lg)"></div>
+      <div class="skeleton" style="height:150px;border-radius:var(--radius-lg)"></div>
+    </div>
+  </div>
+</section>
+
+<div id="toast-container" class="toast-container"></div>
+<script src="../js/config.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/auth-redirects.js"></script>
+<script src="../js/main.js"></script>
+<script>
+function esc(s) { return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function populateWilayas() {
+  const sel = document.getElementById('f-wilaya');
+  if (!sel || typeof WILAYAS === 'undefined') return;
+  WILAYAS.forEach(w => { const o = document.createElement('option'); o.value = w; o.textContent = w; sel.appendChild(o); });
+}
+
+async function loadLabs() {
+  const grid  = document.getElementById('labs-grid');
+  const count = document.getElementById('labs-count');
+  grid.innerHTML = '<div class="skeleton" style="height:150px;border-radius:var(--radius-lg)"></div>'.repeat(3);
+
+  const q      = document.getElementById('f-query')?.value.trim() || '';
+  const wilaya = document.getElementById('f-wilaya')?.value || '';
+
+  try {
+    const p = {};
+    if (q)      p.q = q;
+    if (wilaya) p.wilaya = wilaya;
+
+    const data  = await api.get('/labs/index.php', p);
+    const items = Array.isArray(data) ? data : (data.labs || data.analyses || data.data || []);
+    if (count) count.textContent = `${data.total || items.length} مخبر`;
+
+    if (!items.length) {
+      grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">🧪</div><p>لا توجد مخابر لهذه المعايير</p></div>';
+      return;
+    }
+
+    grid.innerHTML = items.map(lab => `
+      <div onclick="window.location.href=\'laboratory-profile.html?id=${lab.id}\'" style="background:white;border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;transition:all .3s;cursor:pointer">
+        <div style="margin-bottom:.75rem">
+          <h3 style="font-weight:800;font-size:.95rem;margin-bottom:.2rem">${esc(lab.name)}</h3>
+          <div style="font-size:.8rem;color:var(--muted)">📍 ${esc(lab.city || '')}, ${esc(lab.wilaya || '')}</div>
+        </div>
+        ${lab.address ? `<div style="font-size:.8rem;color:var(--muted);margin-bottom:.5rem">🏠 ${esc(lab.address)}</div>` : ''}
+        ${lab.analyses_count != null ? `<div style="font-size:.8rem;color:var(--muted);margin-bottom:.5rem">🧬 ${lab.analyses_count} تحليل مدرج</div>` : ''}
+        <div style="display:flex;gap:.75rem;flex-wrap:wrap;margin-top:.5rem">
+          ${lab.phone ? `<a href="tel:${esc(lab.phone)}" class="btn btn-outline btn-sm" style="font-size:.8rem">📞 ${esc(lab.phone)}</a>` : ''}
+          ${lab.wait_time ? `<span class="badge badge-muted" style="font-size:.75rem">⏱ ${esc(String(lab.wait_time))} دقيقة</span>` : ''}
+        </div>
+      </div>`).join('');
+  } catch (err) {
+    grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">⚠️</div><p>تعذر التحميل</p></div>';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => { populateWilayas(); loadLabs(); });
+</script>
+</body>
+</html>

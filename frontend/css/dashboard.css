@@ -1,0 +1,158 @@
+/* ── Dashboard layout ── */
+.dashboard { min-height: 100vh; background: var(--background); }
+
+.dash-header {
+  background: var(--sidebar); color: var(--sidebar-fg);
+  padding: 0 1.5rem; height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.dash-brand { display: flex; align-items: center; gap: 0.75rem; }
+.dash-brand .logo { width: 36px; height: 36px; border-radius: var(--radius-sm); background: var(--primary); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.1rem; }
+.dash-brand h1 { font-weight: 700; font-size: 1rem; margin: 0; }
+.dash-brand small { display: block; font-size: 0.7rem; opacity: 0.6; }
+.dash-header-actions { display: flex; align-items: center; gap: 0.75rem; }
+.dash-notif {
+  display: flex; align-items: center; gap: 0.4rem;
+  background: hsla(255,255,255,0.12); color: rgba(255,255,255,0.85);
+  border-radius: var(--radius-full); padding: 0.35rem 0.85rem; font-size: 0.78rem;
+}
+.dash-notif.urgent { background: rgba(239,68,68,0.2); color: #fca5a5; animation: pulse 2s infinite; }
+.dash-icon-btn {
+  width: 36px; height: 36px; border-radius: var(--radius-sm);
+  background: none; border: none; color: rgba(255,255,255,0.6);
+  display: flex; align-items: center; justify-content: center;
+  transition: background var(--transition); font-size: 1.1rem;
+}
+.dash-icon-btn:hover { background: rgba(255,255,255,0.1); color: white; }
+
+.dash-content { padding: 1.75rem; max-width: 1280px; margin: 0 auto; }
+
+/* Welcome row */
+.dash-welcome { margin-bottom: 1.5rem; }
+.dash-welcome h2 { font-size: 1.5rem; font-weight: 900; color: var(--text); margin-bottom: 0.2rem; }
+.dash-welcome p { color: var(--muted); font-size: 0.875rem; }
+
+/* Stats grid */
+.dash-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.75rem; }
+
+/* Inventory table */
+.table-card { background: white; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+.table-card .card-header { gap: 1rem; }
+.table-wrapper { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+thead { background: var(--muted-bg); }
+th {
+  padding: 0.75rem 1.1rem; text-align: right;
+  font-size: 0.8rem; font-weight: 600; color: var(--muted); white-space: nowrap;
+}
+td {
+  padding: 0.85rem 1.1rem; border-bottom: 1px solid var(--border);
+  font-size: 0.875rem; color: var(--text);
+}
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--muted-bg); }
+.td-actions { display: flex; gap: 0.35rem; }
+
+/* Partnership cards */
+.partner-req-card {
+  background: white; border: 2px solid hsl(25,95%,85%);
+  border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 0.75rem;
+}
+.partner-active-card {
+  background: white; border: 1.5px solid hsl(158,64%,80%);
+  border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 0.75rem;
+}
+.partner-card-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.partner-rep-info { display: flex; align-items: flex-start; gap: 0.85rem; }
+.partner-rep-icon {
+  width: 42px; height: 42px; border-radius: var(--radius);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; background: var(--primary-light); flex-shrink: 0;
+}
+.partner-rep-name { font-weight: 700; color: var(--text); margin-bottom: 0.2rem; }
+.partner-rep-meta { font-size: 0.8rem; color: var(--muted); display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 0.35rem; }
+.partner-rep-meta span { display: flex; align-items: center; gap: 0.3rem; }
+.partner-message {
+  background: var(--muted-bg); border-radius: var(--radius);
+  padding: 0.5rem 0.75rem; font-size: 0.85rem; margin-top: 0.5rem;
+  font-style: italic; max-width: 520px;
+}
+.partner-actions { display: flex; gap: 0.5rem; align-items: flex-start; flex-shrink: 0; }
+
+/* Alert cards */
+.alert-card {
+  border-radius: var(--radius-lg); padding: 1.1rem 1.25rem;
+  border-right: 4px solid; margin-bottom: 0.75rem;
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+}
+.alert-card.high   { border-right-color: var(--red);    background: var(--red-light); }
+.alert-card.medium { border-right-color: var(--orange);  background: var(--orange-light); }
+.alert-card.low    { border-right-color: #ca8a04; background: hsl(48,96%,97%); }
+
+/* Partner pharmacy cards */
+.pharmacy-btn-card {
+  background: white; border: 2px solid var(--border);
+  border-radius: var(--radius-lg); padding: 1rem;
+  cursor: pointer; transition: all var(--transition);
+  text-align: right; width: 100%;
+}
+.pharmacy-btn-card:hover:not(:disabled) { border-color: var(--primary); }
+.pharmacy-btn-card.selected { border-color: var(--primary); background: var(--primary-light); }
+.pharmacy-btn-card:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* Resupply request cards */
+.resupply-card {
+  background: white; border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 1.1rem 1.25rem;
+  margin-bottom: 0.75rem;
+}
+.resupply-card-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+
+/* Filtered inventory */
+.inv-filter-header {
+  background: var(--primary-light); border-bottom: 1px solid hsl(199,89%,85%);
+  padding: 0.75rem 1.1rem; display: flex; align-items: center; justify-content: space-between;
+  font-size: 0.85rem; font-weight: 600; color: var(--primary);
+}
+
+/* Partnership stats summary */
+.partner-summary {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem;
+}
+.partner-summary-card {
+  border-radius: var(--radius-lg); padding: 1rem; text-align: center;
+}
+.partner-summary-card.pending { background: var(--orange-light); border: 1px solid hsl(25,95%,85%); }
+.partner-summary-card.active  { background: var(--secondary-light); border: 1px solid hsl(158,64%,80%); }
+.partner-summary-card.revoked { background: var(--muted-bg); border: 1px solid var(--border); }
+.partner-summary-card strong { display: block; font-size: 2rem; font-weight: 900; }
+.partner-summary-card span { font-size: 0.8rem; font-weight: 600; }
+.partner-summary-card.pending strong { color: var(--orange); }
+.partner-summary-card.active  strong { color: var(--secondary); }
+.partner-summary-card.revoked strong { color: var(--muted); }
+
+/* Product progress bar */
+.prod-progress { height: 8px; background: var(--muted-bg); border-radius: var(--radius-full); overflow: hidden; margin-top: 0.5rem; }
+.prod-progress-fill { height: 100%; border-radius: var(--radius-full); transition: width 0.8s ease; }
+
+/* Section titles */
+.section-title {
+  font-size: 0.95rem; font-weight: 700; color: var(--text);
+  margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;
+}
+.section-title .icon { font-size: 1rem; }
+
+/* Empty state */
+.empty-state {
+  text-align: center; padding: 3rem 1rem; color: var(--muted);
+}
+.empty-state .empty-icon { font-size: 3rem; margin-bottom: 0.75rem; opacity: 0.3; }
+.empty-state p { font-size: 0.9rem; }
+
+@media (max-width: 768px) {
+  .dash-stats { grid-template-columns: repeat(2, 1fr); }
+  .dash-content { padding: 1rem; }
+}
+@media (max-width: 480px) {
+  .dash-stats { grid-template-columns: 1fr; }
+}

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تسجيل الدخول — شفاء ديزاد</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <style>
+    .auth-page { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:2rem 1rem; }
+    .auth-card  { background:white; border:1.5px solid var(--border); border-radius:var(--radius-xl); padding:2.5rem 2rem; width:100%; max-width:420px; box-shadow:var(--shadow-lg); }
+    .auth-logo  { text-align:center; margin-bottom:2rem; }
+    .auth-logo a { text-decoration:none; font-size:1.5rem; font-weight:900; color:var(--text); }
+    .auth-logo span { color:var(--primary); }
+    .auth-title { font-size:1.3rem; font-weight:900; color:var(--text); margin-bottom:.35rem; text-align:center; }
+    .auth-sub   { font-size:.875rem; color:var(--muted); text-align:center; margin-bottom:1.75rem; }
+    .tab-row    { display:flex; gap:.5rem; margin-bottom:1.75rem; background:var(--muted-bg); border-radius:var(--radius-lg); padding:.3rem; }
+    .tab-btn    { flex:1; padding:.55rem; border:none; border-radius:var(--radius); background:none; font-family:var(--font); font-size:.875rem; font-weight:700; cursor:pointer; transition:all .2s; color:var(--muted); }
+    .tab-btn.active { background:white; color:var(--primary); box-shadow:0 2px 8px rgba(0,0,0,.06); }
+    .auth-footer { text-align:center; margin-top:1.5rem; font-size:.85rem; color:var(--muted); }
+    .auth-footer a { color:var(--primary); font-weight:700; text-decoration:none; }
+    .admin-link { display:block; text-align:center; margin-top:1rem; font-size:.8rem; color:var(--muted); }
+    .admin-link a { color:var(--muted); }
+    .error-msg { background:var(--red-light); color:var(--red); border-radius:var(--radius); padding:.75rem 1rem; font-size:.875rem; margin-bottom:1rem; display:none; }
+    .error-msg.show { display:block; }
+  </style>
+</head>
+<body>
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <a href="../index.html">شفاء<span>ديزاد</span></a>
+    </div>
+
+    <div class="tab-row">
+      <button class="tab-btn active" id="tab-login" onclick="showTab('login')">تسجيل الدخول</button>
+      <button class="tab-btn" id="tab-register" onclick="showTab('register')">إنشاء حساب</button>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <div id="panel-login">
+      <div class="error-msg" id="login-error"></div>
+      <form id="login-form">
+        <div class="form-group">
+          <label class="form-label">البريد الإلكتروني</label>
+          <input type="email" id="l-email" class="input" required placeholder="example@email.com" autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label class="form-label">كلمة المرور</label>
+          <input type="password" id="l-password" class="input" required placeholder="••••••••" autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;margin-top:.5rem" id="login-btn">تسجيل الدخول</button>
+      </form>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <div id="panel-register" style="display:none">
+      <div class="error-msg" id="reg-error"></div>
+      <form id="register-form">
+        <div class="form-group">
+          <label class="form-label">الاسم الكامل *</label>
+          <input type="text" id="r-name" class="input" required placeholder="اسمك الكامل">
+        </div>
+        <div class="form-group">
+          <label class="form-label">البريد الإلكتروني *</label>
+          <input type="email" id="r-email" class="input" required placeholder="example@email.com" autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label class="form-label">رقم الهاتف</label>
+          <input type="tel" id="r-phone" class="input" placeholder="05xxxxxxxx">
+        </div>
+        <div class="form-group">
+          <label class="form-label">نوع الحساب *</label>
+          <select id="r-role" class="input">
+            <option value="patient">مريض / زائر</option>
+            <option value="pharmacist">صيدلاني</option>
+            <option value="lab">مخبر تحاليل</option>
+            <option value="med_rep">مزود أدوية</option>
+            <option value="medical_services">معدات طبية</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">كلمة المرور *</label>
+          <input type="password" id="r-password" class="input" required placeholder="6 أحرف على الأقل" autocomplete="new-password">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;margin-top:.5rem" id="reg-btn">إنشاء الحساب</button>
+      </form>
+    </div>
+
+    <!-- Demo Accounts Section -->
+    <div id="panel-demo" style="margin-top:1.5rem;padding-top:1.25rem;border-top:1.5px solid var(--border)">
+      <div style="font-size:.8rem;font-weight:800;color:var(--muted);text-align:center;margin-bottom:.85rem;letter-spacing:.04em">الحسابات التجريبية</div>
+      <div style="display:flex;flex-direction:column;gap:.5rem" id="demo-list">
+        <div class="demo-row">
+          <div class="demo-info">
+            <span class="demo-icon">🛡️</span>
+            <span class="demo-name">مدير النظام</span>
+            <span class="demo-email">admin@shifaa.dz</span>
+          </div>
+          <button class="demo-fill" onclick="fillDemo('admin@shifaa.dz','demo123')">تعبئة</button>
+        </div>
+        <div class="demo-row">
+          <div class="demo-info">
+            <span class="demo-icon">💊</span>
+            <span class="demo-name">صيدلاني</span>
+            <span class="demo-email">pharma@shifaa.dz</span>
+          </div>
+          <button class="demo-fill" onclick="fillDemo('pharma@shifaa.dz','demo123')">تعبئة</button>
+        </div>
+        <div class="demo-row">
+          <div class="demo-info">
+            <span class="demo-icon">💼</span>
+            <span class="demo-name">مزود أدوية</span>
+            <span class="demo-email">medrep@shifaa.dz</span>
+          </div>
+          <button class="demo-fill" onclick="fillDemo('medrep@shifaa.dz','demo123')">تعبئة</button>
+        </div>
+        <div class="demo-row">
+          <div class="demo-info">
+            <span class="demo-icon">🧪</span>
+            <span class="demo-name">مخبر</span>
+            <span class="demo-email">lab@shifaa.dz</span>
+          </div>
+          <button class="demo-fill" onclick="fillDemo('lab@shifaa.dz','demo123')">تعبئة</button>
+        </div>
+        <div class="demo-row">
+          <div class="demo-info">
+            <span class="demo-icon">🩺</span>
+            <span class="demo-name">معدات طبية</span>
+            <span class="demo-email">service@shifaa.dz</span>
+          </div>
+          <button class="demo-fill" onclick="fillDemo('service@shifaa.dz','demo123')">تعبئة</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="admin-link"><a href="admin-login.html">دخول الإدارة</a></div>
+  </div>
+</div>
+
+<div id="toast-container" class="toast-container"></div>
+<style>
+.demo-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: .45rem .65rem; border-radius: var(--radius);
+  background: var(--muted-bg); gap: .5rem;
+  transition: background .15s;
+}
+.demo-row:hover { background: var(--primary-light); }
+.demo-info { display: flex; align-items: center; gap: .5rem; flex: 1; overflow: hidden; }
+.demo-icon { font-size: 1rem; flex-shrink: 0; }
+.demo-name { font-size: .8rem; font-weight: 800; color: var(--text); white-space: nowrap; }
+.demo-email { font-size: .72rem; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.demo-fill {
+  background: var(--primary); color: white;
+  border: none; border-radius: var(--radius); padding: .3rem .75rem;
+  font-size: .75rem; font-weight: 800; cursor: pointer;
+  white-space: nowrap; font-family: var(--font);
+  transition: background .15s; flex-shrink: 0;
+}
+.demo-fill:hover { background: var(--primary-dark, #059669); }
+.demo-fill.loading { opacity: .6; pointer-events: none; }
+</style>
+<script src="../js/config.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/auth-redirects.js"></script>
+<script src="../js/main.js"></script>
+<script>
+function fillDemo(email, pw) {
+  showTab('login');
+  const emailField = document.getElementById('l-email');
+  const passField  = document.getElementById('l-password');
+  const nativeSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
+
+  nativeSetter.call(emailField, email);
+  emailField.dispatchEvent(new Event('input', { bubbles: true }));
+  nativeSetter.call(passField, pw);
+  passField.dispatchEvent(new Event('input', { bubbles: true }));
+
+  setTimeout(() => {
+    document.getElementById('login-form').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+  }, 150);
+}
+
+function showTab(tab) {
+  document.getElementById('panel-login').style.display    = tab === 'login'    ? '' : 'none';
+  document.getElementById('panel-register').style.display = tab === 'register' ? '' : 'none';
+  document.getElementById('tab-login').classList.toggle('active',    tab === 'login');
+  document.getElementById('tab-register').classList.toggle('active', tab === 'register');
+}
+
+function showErr(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg; el.classList.add('show');
+}
+function hideErr(id) { document.getElementById(id).classList.remove('show'); }
+
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  hideErr('login-error');
+  const btn = document.getElementById('login-btn');
+  btn.disabled = true; btn.textContent = 'جارٍ الدخول...';
+  try {
+    const data = await api.post('/auth/login.php', {
+      email:    document.getElementById('l-email').value,
+      password: document.getElementById('l-password').value,
+    });
+    localStorage.setItem('shifaa_user', JSON.stringify(data));
+    showToast('مرحباً بك!', 'success');
+    const params = new URLSearchParams(window.location.search);
+    const redirect = resolveLoginRedirect(data, params.get('redirect'));
+    setTimeout(() => { window.location.href = redirect; }, 700);
+  } catch (err) {
+    showErr('login-error', err.message || 'خطأ في تسجيل الدخول');
+    btn.disabled = false; btn.textContent = 'تسجيل الدخول';
+  }
+});
+
+document.getElementById('register-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  hideErr('reg-error');
+  const btn = document.getElementById('reg-btn');
+  btn.disabled = true; btn.textContent = 'جارٍ الإنشاء...';
+  try {
+    const data = await api.post('/auth/register.php', {
+      full_name: document.getElementById('r-name').value,
+      email:     document.getElementById('r-email').value,
+      phone:     document.getElementById('r-phone').value,
+      password:  document.getElementById('r-password').value,
+      role:      document.getElementById('r-role').value,
+    });
+    const email = document.getElementById('r-email').value;
+    sessionStorage.setItem('pending_verify_email', email);
+    sessionStorage.setItem('pending_verify_email_sent', data.email_sent ? '1' : '0');
+    if (data.dev_code) sessionStorage.setItem('pending_verify_dev_code', data.dev_code);
+    showToast('تم الإنشاء! أدخل رمز التحقق.', 'success');
+    setTimeout(() => { window.location.href = 'verify-email.html'; }, 800);
+  } catch (err) {
+    showErr('reg-error', err.message || 'خطأ في إنشاء الحساب');
+    btn.disabled = false; btn.textContent = 'إنشاء الحساب';
+  }
+});
+
+const params = new URLSearchParams(window.location.search);
+if (params.get('tab') === 'register') showTab('register');
+</script>
+</body>
+</html>

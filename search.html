@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>بحث عن دواء — شفاء ديزاد</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/search.css">
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <a href="../index.html" class="navbar-brand">
+    <div class="logo-icon">💊</div>
+    <span>شفاء<span style="color:var(--primary)">ديزاد</span></span>
+  </a>
+  <ul class="navbar-links">
+    <li><a href="../index.html">الرئيسية</a></li>
+    <li><a href="search.html" class="active">بحث عن دواء</a></li>
+    <li><a href="pharmacies.html">الصيدليات</a></li>
+    <li><a href="donations.html">التضامن الصحي</a></li>
+    <li><a href="pricing.html">الاشتراكات</a></li>
+    <li><a href="contact.html">تواصل معنا</a></li>
+  </ul>
+  <div class="navbar-actions">
+    <a href="dashboard/pharmacy.html" class="btn btn-ghost btn-sm">لوحة الصيدلية</a>
+    <a href="dashboard/med-rep.html"  class="btn btn-primary btn-sm">بوابة مزود الأدوية</a>
+  </div>
+  <button class="navbar-toggle" id="navbar-toggle" aria-label="القائمة">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="mobile-menu" id="mobile-menu">
+  <a href="../index.html">🏠 الرئيسية</a>
+  <a href="search.html">🔍 بحث عن دواء</a>
+  <a href="pharmacies.html">🏥 الصيدليات</a>
+  <a href="donations.html">🎁 التضامن الصحي</a>
+  <a href="pricing.html">💳 الاشتراكات</a>
+  <a href="contact.html">📞 تواصل معنا</a>
+</div>
+
+<!-- Search header -->
+<section class="page-hero">
+  <div class="container">
+    <h1>🔍 بحث عن دواء</h1>
+    <p>ابحث في مئات الصيدليات عبر الجزائر</p>
+  </div>
+</section>
+
+<!-- Filters -->
+<section class="section" style="padding-bottom:0">
+  <div class="container">
+    <form id="search-form" class="search-filters">
+      <input
+        type="text"
+        id="s-query"
+        class="input"
+        placeholder="اسم الدواء، المكوّن الفعّال..."
+        autocomplete="off"
+      >
+      <select id="s-wilaya" class="input">
+        <option value="">كل الولايات</option>
+        <!-- populated by JS -->
+      </select>
+      <select id="s-type" class="input">
+        <option value="">جميع الأنواع</option>
+        <option value="medicine">دواء</option>
+        <option value="device">جهاز طبي</option>
+        <option value="parapharmacy">شبه صيدلاني</option>
+        <option value="emergency">طوارئ</option>
+      </select>
+      <select id="s-availability" class="input">
+        <option value="">كل الحالات</option>
+        <option value="available">متوفر</option>
+        <option value="limited">محدود</option>
+        <option value="unavailable">غير متوفر</option>
+      </select>
+      <button type="submit" class="btn btn-primary">بحث</button>
+    </form>
+  </div>
+</section>
+
+<!-- Results -->
+<section class="section">
+  <div class="container">
+    <div class="results-header">
+      <span id="results-count" class="results-count"></span>
+    </div>
+    <div id="results">
+      <!-- populated by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- Reservation Modal -->
+<div class="modal-overlay hidden" id="reservation-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title">حجز دواء</h3>
+      <button class="modal-close" data-modal-close="reservation-modal">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-info-row">
+        <span>الدواء:</span>
+        <strong id="res-medicine-name">—</strong>
+      </div>
+      <div class="modal-info-row">
+        <span>الصيدلية:</span>
+        <strong id="res-pharmacy-name">—</strong>
+      </div>
+      <form id="res-form">
+        <div class="form-group">
+          <label class="form-label">الاسم الكامل *</label>
+          <input type="text" id="res-patient-name" class="input" required placeholder="أدخل اسمك الكامل">
+        </div>
+        <div class="form-group">
+          <label class="form-label">رقم الهاتف *</label>
+          <input type="tel" id="res-patient-phone" class="input" required placeholder="05xxxxxxxx">
+        </div>
+        <div class="form-group">
+          <label class="form-label">الكمية</label>
+          <input type="number" id="res-qty" class="input" value="1" min="1" max="100">
+        </div>
+        <div class="form-group">
+          <label class="form-label">ملاحظات (اختياري)</label>
+          <textarea id="res-notes" class="input" rows="3" placeholder="أي معلومات إضافية..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%">تأكيد الحجز</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container (created by JS if missing, but good to have) -->
+<div id="toast-container" class="toast-container"></div>
+
+<!--
+  ⚠️  Script load ORDER matters:
+      1. config.js  — defines API_BASE, PHARMACY_ID, REP_ID
+      2. api.js     — defines apiFetch / api object  (needs API_BASE)
+      3. main.js    — defines helpers: showToast, openModal, closeModal, WILAYAS …
+      4. search.js  — uses api, showToast, openModal, WILAYAS
+-->
+<script src="../js/config.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/main.js"></script>
+<script src="../js/search.js"></script>
+
+</body>
+</html>

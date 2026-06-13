@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة المخبر — شفاء ديزاد</title>
+  <link rel="stylesheet" href="../../css/main.css">
+  <link rel="stylesheet" href="../../css/dashboard.css">
+  <link rel="stylesheet" href="../../css/pro-dashboard.css">
+  <style>
+    body { background:var(--muted-bg); }
+    .pro-layout { display:flex; min-height:100vh; }
+    .pro-sidebar { width:240px; background:var(--sidebar); color:var(--sidebar-fg); padding:1.5rem 1rem; flex-shrink:0; display:flex; flex-direction:column; gap:.35rem; }
+    .pro-sidebar .brand { font-size:1.1rem; font-weight:900; margin-bottom:1.25rem; padding:.5rem; color:white; }
+    .pro-sidebar .brand span { color:var(--primary); }
+    .pro-nav-item { display:flex; align-items:center; gap:.75rem; padding:.65rem .9rem; border-radius:var(--radius); color:rgba(255,255,255,.7); font-size:.875rem; font-weight:600; cursor:pointer; transition:all .2s; border:none; background:none; width:100%; text-align:right; }
+    .pro-nav-item:hover, .pro-nav-item.active { background:rgba(255,255,255,.12); color:white; }
+    .pro-main { flex:1; display:flex; flex-direction:column; }
+    .pro-topbar { background:white; border-bottom:1px solid var(--border); padding:1rem 1.5rem; display:flex; align-items:center; justify-content:space-between; }
+    .pro-topbar-avatar { width:36px; height:36px; border-radius:50%; background:var(--primary); color:white; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:.9rem; }
+    .pro-content { flex:1; padding:1.5rem; overflow-y:auto; }
+    .stats-row { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:1rem; margin-bottom:1.5rem; }
+    .stat-card { background:white; border:1.5px solid var(--border); border-radius:var(--radius-lg); padding:1.25rem; }
+    .stat-val  { font-size:1.6rem; font-weight:900; color:var(--primary); }
+    .stat-lbl  { font-size:.8rem; color:var(--muted); margin-top:.2rem; }
+    .section-card { background:white; border:1.5px solid var(--border); border-radius:var(--radius-xl); padding:1.5rem; }
+    .logout-btn { margin-top:auto; padding:.65rem .9rem; border-radius:var(--radius); color:rgba(255,255,255,.5); font-size:.85rem; font-weight:600; cursor:pointer; border:none; background:none; width:100%; text-align:right; display:flex; align-items:center; gap:.75rem; }
+    .logout-btn:hover { color:white; background:rgba(255,0,0,.15); }
+    @media (max-width:768px) { .pro-sidebar { display:none; } }
+  </style>
+</head>
+<body>
+<div class="pro-layout">
+  <aside class="pro-sidebar">
+    <div class="brand">شفاء<span>ديزاد</span></div>
+    <div style="padding:.5rem .9rem;font-size:.75rem;color:rgba(255,255,255,.4);font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-top:.5rem">🧪 مخبر التحاليل</div>
+    <button class="pro-nav-item active" data-section="section-analyses">📋 التحاليل</button>
+    <button class="pro-nav-item" data-section="section-overview">📊 الإحصاءات</button>
+    <button class="pro-nav-item" data-section="section-analyses">⚙️ إعدادات الملف</button>
+    <button class="logout-btn" onclick="logout()">🚪 تسجيل الخروج</button>
+  </aside>
+
+  <div class="pro-main">
+    <div class="pro-topbar">
+      <div>
+        <h2 style="font-size:1rem;font-weight:800">لوحة تحكم المخبر — <span class="lab-name-display">--</span></h2>
+        <div style="font-size:.8rem;color:var(--muted)" id="lab-welcome-sub"></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:.75rem">
+        <div class="user-info"><strong></strong></div>
+        <div class="pro-topbar-avatar user-avatar">م</div>
+      </div>
+    </div>
+
+    <div class="pro-content">
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-val" id="stat-analyses">--</div><div class="stat-lbl">تحاليل مدرجة</div></div>
+        <div class="stat-card"><div class="stat-val" id="stat-views">--</div><div class="stat-lbl">مرات الظهور</div></div>
+        <div class="stat-card"><div class="stat-val" id="stat-sub-plan">--</div><div class="stat-lbl">الباقة الحالية</div></div>
+        <div class="stat-card"><div class="stat-val" id="stat-sub-expiry" style="font-size:1rem">--</div><div class="stat-lbl">تاريخ الانتهاء</div></div>
+      </div>
+
+      <div class="section-card" id="lab-analyses-block">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+          <h3 style="font-weight:800">التحاليل المتاحة — <span id="stat-analyses-count">--</span></h3>
+          <button class="btn btn-primary btn-sm" id="btn-add-analysis">+ إضافة تحليل</button>
+        </div>
+        <div style="overflow-x:auto">
+          <table style="width:100%;border-collapse:collapse;font-size:.875rem">
+            <thead><tr style="border-bottom:1.5px solid var(--border)">
+              <th style="padding:.6rem;text-align:right;font-weight:800">التحليل</th>
+              <th style="padding:.6rem;text-align:right;font-weight:800">التصنيف</th>
+              <th style="padding:.6rem;text-align:right;font-weight:800">السعر</th>
+              <th style="padding:.6rem;text-align:right;font-weight:800">وقت الانتظار</th>
+              <th style="padding:.6rem;text-align:right;font-weight:800">إجراء</th>
+            </tr></thead>
+            <tbody id="analyses-tbody">
+              <tr><td colspan="5" style="text-align:center;padding:2rem"><div class="spinner"></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Analysis Modal -->
+<div class="modal-overlay hidden" id="analysis-modal">
+  <div class="modal" style="max-width:480px;width:94%">
+    <div class="modal-header">
+      <h3 class="modal-title" id="modal-title">إضافة تحليل</h3>
+      <button class="modal-close" id="modal-close">✕</button>
+    </div>
+    <div class="modal-body">
+      <form id="analysis-form">
+        <div class="form-group">
+          <label class="form-label">اسم التحليل (انجليزي) *</label>
+          <input type="text" id="f-name" class="input" required placeholder="CBC">
+        </div>
+        <div class="form-group">
+          <label class="form-label">اسم التحليل (عربي)</label>
+          <input type="text" id="f-namear" class="input" placeholder="فحص الدم الشامل">
+        </div>
+        <div class="form-group">
+          <label class="form-label">التصنيف</label>
+          <select id="f-category" class="input">
+            <option value="">— اختر التصنيف —</option>
+            <option value="hematology">دموية</option>
+            <option value="biochemistry">كيمياء حيوية</option>
+            <option value="microbiology">ميكروبيولوجيا</option>
+            <option value="immunology">مناعة</option>
+            <option value="hormones">هرمونات</option>
+            <option value="other">أخرى</option>
+          </select>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
+          <div class="form-group">
+            <label class="form-label">السعر (دج)</label>
+            <input type="number" id="f-price" class="input" min="0" placeholder="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">وقت الانتظار</label>
+            <input type="text" id="f-time" class="input" placeholder="24 ساعة">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">الوصف</label>
+          <textarea id="f-desc" class="input" rows="2" placeholder="وصف مختصر للتحليل..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%">حفظ</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container" class="toast-container"></div>
+<script src="../../js/config.js"></script>
+<script src="../../js/api.js"></script>
+<script src="../../js/auth-redirects.js"></script>
+<script src="../../js/main.js"></script>
+<script>
+function logout() {
+  api.post('/auth/logout.php', {}).catch(() => {});
+  localStorage.removeItem('shifaa_user');
+  window.location.href = '../login.html';
+}
+function formatDate(d) { try { return new Date(d).toLocaleDateString('ar-DZ', {year:'numeric',month:'short',day:'numeric'}); } catch { return d; } }
+</script>
+<script src="../../js/dashboard-lab.js"></script>
+</body>
+</html>

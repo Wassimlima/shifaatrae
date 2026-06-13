@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>التحقق من البريد — شفاء ديزاد</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <style>
+    .auth-page { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:2rem 1rem; }
+    .auth-card  { background:white; border:1.5px solid var(--border); border-radius:var(--radius-xl); padding:2.5rem 2rem; width:100%; max-width:420px; box-shadow:var(--shadow-lg); text-align:center; }
+    .verify-icon { font-size:3.5rem; margin-bottom:1rem; }
+    .auth-title  { font-size:1.3rem; font-weight:900; margin-bottom:.4rem; }
+    .auth-sub    { font-size:.875rem; color:var(--muted); margin-bottom:2rem; line-height:1.6; }
+    .code-input  { font-size:1.75rem; font-weight:900; letter-spacing:.5em; text-align:center; padding:1rem; border:2px solid var(--border); border-radius:var(--radius-lg); width:100%; font-family:monospace; transition:border-color .2s; }
+    .code-input:focus { border-color:var(--primary); outline:none; }
+    .error-msg  { background:var(--red-light); color:var(--red); border-radius:var(--radius); padding:.75rem; font-size:.875rem; margin-top:1rem; display:none; }
+    .error-msg.show { display:block; }
+    .resend-row { margin-top:1rem; font-size:.85rem; color:var(--muted); }
+    .resend-row a { color:var(--primary); font-weight:700; cursor:pointer; text-decoration:none; }
+  </style>
+</head>
+<body>
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="verify-icon">📧</div>
+    <h2 class="auth-title">تحقق من بريدك الإلكتروني</h2>
+    <p class="auth-sub" id="verify-sub">تم إرسال رمز تحقق مكون من 6 أرقام إلى بريدك الإلكتروني. أدخله أدناه لتفعيل حسابك.</p>
+
+    <form id="verify-form">
+      <input type="text" id="v-code" class="code-input" maxlength="6" placeholder="000000" inputmode="numeric" autocomplete="one-time-code">
+      <button type="submit" class="btn btn-primary" style="width:100%;margin-top:1.25rem" id="verify-btn">تأكيد الرمز</button>
+    </form>
+
+    <div class="error-msg" id="verify-error"></div>
+
+    <div class="resend-row">
+      لم تتلق الرمز؟ <a id="resend-link" onclick="resendCode()">إعادة الإرسال</a>
+    </div>
+
+    <div style="margin-top:1.25rem">
+      <a href="login.html" style="font-size:.85rem;color:var(--muted)">← العودة لتسجيل الدخول</a>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container" class="toast-container"></div>
+<script src="../js/config.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/main.js"></script>
+<script>
+const pendingEmail   = sessionStorage.getItem('pending_verify_email')     || '';
+const emailSent      = sessionStorage.getItem('pending_verify_email_sent') === '1';
+const devCode        = sessionStorage.getItem('pending_verify_dev_code')   || '';
+
+if (!pendingEmail) {
+  document.querySelector('.auth-card').innerHTML = '<p style="color:var(--red)">لا يوجد بريد إلكتروني معلق. <a href="login.html">العودة</a></p>';
+} else {
+  const sub = document.getElementById('verify-sub');
+  if (emailSent) {
+    sub.textContent = `تم إرسال رمز تحقق إلى ${pendingEmail}. أدخله أدناه لتفعيل حسابك.`;
+  } else {
+    sub.textContent = `تعذر إرسال البريد الإلكتروني تلقائياً. الرمز معروض أدناه — أدخله لتفعيل حسابك.`;
+  }
+
+  if (!emailSent && devCode) {
+    const box = document.createElement('div');
+    box.style.cssText = 'background:#ecfdf5;border:2px solid #6ee7b7;border-radius:12px;padding:1rem;margin-bottom:1.25rem;text-align:center';
+    box.innerHTML = `<div style="font-size:.8rem;color:#065f46;font-weight:700;margin-bottom:.4rem">رمز التحقق الخاص بك</div>
+      <div style="font-size:2rem;font-weight:900;letter-spacing:.4em;color:#059669;font-family:monospace" id="displayed-dev-code">${devCode}</div>
+      <div style="font-size:.75rem;color:#6b7280;margin-top:.4rem">انسخه وأدخله في الحقل أدناه</div>`;
+    document.getElementById('verify-form').insertAdjacentElement('beforebegin', box);
+    document.getElementById('v-code').value = devCode;
+  }
+}
+
+document.getElementById('verify-form')?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const errEl = document.getElementById('verify-error');
+  errEl.classList.remove('show');
+  const btn  = document.getElementById('verify-btn');
+  const code = document.getElementById('v-code').value.trim();
+  if (code.length !== 6) { errEl.textContent = 'الرمز يجب أن يكون 6 أرقام'; errEl.classList.add('show'); return; }
+  btn.disabled = true; btn.textContent = 'جارٍ التحقق...';
+  try {
+    await api.post('/auth/verify-email.php', { email: pendingEmail, code });
+    sessionStorage.removeItem('pending_verify_email');
+    sessionStorage.removeItem('pending_verify_email_sent');
+    sessionStorage.removeItem('pending_verify_dev_code');
+    showToast('تم التحقق بنجاح! يمكنك الآن تسجيل الدخول.', 'success');
+    setTimeout(() => { window.location.href = 'login.html'; }, 1200);
+  } catch (err) {
+    errEl.textContent = err.message || 'الرمز غير صحيح';
+    errEl.classList.add('show');
+    btn.disabled = false; btn.textContent = 'تأكيد الرمز';
+  }
+});
+
+async function resendCode() {
+  if (!pendingEmail) return;
+  try {
+    const data = await api.post('/auth/resend-code.php', { email: pendingEmail });
+    showToast('تم إرسال رمز جديد', 'success');
+    if (data.dev_code) console.log('[DEV] code:', data.dev_code);
+  } catch (err) {
+    showToast(err.message || 'خطأ في إعادة الإرسال', 'error');
+  }
+}
+</script>
+</body>
+</html>

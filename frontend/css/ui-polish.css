@@ -1,0 +1,114 @@
+/* Global UI polish — Shifaa DZ */
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap');
+
+html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+
+:focus-visible {
+  outline: 2px solid var(--primary, #10b981);
+  outline-offset: 2px;
+}
+
+.btn, .pro-btn, button, a.btn {
+  transition: transform var(--transition, .2s ease), box-shadow var(--transition, .2s ease), background var(--transition, .2s ease);
+}
+.btn:active:not(:disabled), .pro-btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.btn:disabled, .pro-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--border, #e2e8f0);
+  border-top-color: var(--primary, #10b981);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.empty-state {
+  text-align: center;
+  padding: 2.5rem 1.5rem;
+  color: var(--muted, #64748b);
+}
+.empty-state .empty-icon { font-size: 2.5rem; margin-bottom: 0.75rem; opacity: 0.85; }
+
+.form-error {
+  color: var(--red, #ef4444);
+  font-size: 0.78rem;
+  font-weight: 600;
+  margin-top: 0.35rem;
+}
+
+.input:invalid:not(:placeholder-shown),
+select.input:invalid {
+  border-color: var(--red, #ef4444);
+}
+
+.toast.success { background: #059669; color: #fff; }
+.toast.error { background: #dc2626; color: #fff; }
+.toast.info { background: #0ea5e9; color: #fff; }
+
+.pro-tabs {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+  padding: 0.35rem;
+  background: var(--muted-bg, #f1f5f9);
+  border-radius: var(--radius-lg, 16px);
+}
+.pro-tabs .tab-btn {
+  flex: 1;
+  min-width: 120px;
+  padding: 0.65rem 1rem;
+  border: none;
+  border-radius: var(--radius, 12px);
+  background: transparent;
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  color: var(--muted);
+  transition: all 0.2s ease;
+}
+.pro-tabs .tab-btn.active {
+  background: white;
+  color: var(--primary);
+  box-shadow: var(--shadow-sm);
+}
+.tab-panel { display: none; }
+.tab-panel.active { display: block; animation: fadeIn 0.25s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(4px);
+  z-index: 8000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.modal-overlay.hidden { display: none; }
+.modal {
+  background: white;
+  border-radius: var(--radius-xl, 20px);
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+}
+
+@media (max-width: 768px) {
+  .pro-stats { grid-template-columns: repeat(2, 1fr) !important; }
+  .pro-grid-2 { grid-template-columns: 1fr !important; }
+  .navbar-links { display: none; }
+}

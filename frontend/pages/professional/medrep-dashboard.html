@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة مزود الأدوية — شفاء ديزاد</title>
+  <link rel="stylesheet" href="../../css/main.css">
+  <link rel="stylesheet" href="../../css/dashboard.css">
+  <link rel="stylesheet" href="../../css/pro-dashboard.css">
+  <style>
+    body { background:var(--muted-bg); }
+    .pro-layout { display:flex; min-height:100vh; }
+    .pro-sidebar { width:240px; background:var(--sidebar); color:var(--sidebar-fg); padding:1.5rem 1rem; flex-shrink:0; display:flex; flex-direction:column; gap:.35rem; }
+    .pro-sidebar .brand { font-size:1.1rem; font-weight:900; margin-bottom:1.25rem; padding:.5rem; color:white; }
+    .pro-sidebar .brand span { color:var(--primary); }
+    .pro-nav-item { display:flex; align-items:center; gap:.75rem; padding:.65rem .9rem; border-radius:var(--radius); color:rgba(255,255,255,.7); font-size:.875rem; font-weight:600; cursor:pointer; transition:all .2s; border:none; background:none; width:100%; text-align:right; position:relative; }
+    .pro-nav-item:hover, .pro-nav-item.active { background:rgba(255,255,255,.12); color:white; }
+    .pro-main { flex:1; display:flex; flex-direction:column; }
+    .pro-topbar { background:white; border-bottom:1px solid var(--border); padding:1rem 1.5rem; display:flex; align-items:center; justify-content:space-between; }
+    .pro-topbar-avatar { width:36px; height:36px; border-radius:50%; background:var(--primary); color:white; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:.9rem; }
+    .pro-content { flex:1; padding:1.5rem; overflow-y:auto; }
+    .stats-row { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:1rem; margin-bottom:1.5rem; }
+    .stat-card { background:white; border:1.5px solid var(--border); border-radius:var(--radius-lg); padding:1.25rem; }
+    .stat-val  { font-size:1.6rem; font-weight:900; color:var(--primary); }
+    .stat-lbl  { font-size:.8rem; color:var(--muted); margin-top:.2rem; }
+    .tab-bar   { display:flex; gap:.5rem; margin-bottom:1.25rem; flex-wrap:wrap; }
+    .tab-btn   { padding:.5rem 1rem; border:1.5px solid var(--border); border-radius:var(--radius); background:white; font-family:var(--font); font-size:.85rem; font-weight:700; cursor:pointer; transition:all .2s; position:relative; }
+    .tab-btn.active { background:var(--primary); color:white; border-color:var(--primary); }
+    .tab-panel { display:none; }
+    .tab-panel.active { display:block; }
+    .section-card { background:white; border:1.5px solid var(--border); border-radius:var(--radius-xl); padding:1.5rem; }
+    .badge-dot { position:absolute; top:4px; left:4px; min-width:16px; height:16px; border-radius:999px; background:var(--red); color:white; font-size:.65rem; font-weight:900; display:none; align-items:center; justify-content:center; padding:0 4px; }
+    .logout-btn { margin-top:auto; padding:.65rem .9rem; border-radius:var(--radius); color:rgba(255,255,255,.5); font-size:.85rem; font-weight:600; cursor:pointer; border:none; background:none; width:100%; text-align:right; display:flex; align-items:center; gap:.75rem; }
+    .logout-btn:hover { color:white; background:rgba(255,0,0,.15); }
+    @media (max-width:768px) { .pro-sidebar { display:none; } }
+  </style>
+</head>
+<body>
+<div class="pro-layout">
+  <aside class="pro-sidebar">
+    <div class="brand">شفاء<span>ديزاد</span></div>
+    <button class="pro-nav-item active" data-tab="products" data-section="section-products">📦 منتجاتي</button>
+    <button class="pro-nav-item" data-tab="alerts" data-section="section-alerts">🔔 التنبيهات <span class="badge-dot" id="nav-alerts-badge"></span></button>
+    <button class="pro-nav-item" data-tab="partners" data-section="section-partners">🤝 الصيدليات الشريكة</button>
+    <button class="pro-nav-item" data-tab="resupply" data-section="section-resupply">🔄 طلبات التموين <span class="badge-dot" id="nav-resupply-badge"></span></button>
+    <button class="logout-btn" onclick="logout()">🚪 تسجيل الخروج</button>
+  </aside>
+
+  <div class="pro-main">
+    <div class="pro-topbar">
+      <div>
+        <h2 style="font-size:1rem;font-weight:800">لوحة مزود الأدوية — <span id="rep-name">--</span></h2>
+        <div style="font-size:.8rem;color:var(--muted)" id="rep-region"></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:.75rem">
+        <div id="urgent-notif" style="display:none;background:var(--red-light,#fef2f2);color:var(--red,#dc2626);border-radius:999px;padding:.25rem .75rem;font-size:.78rem;font-weight:800;align-items:center;gap:.3rem">⚠️ </div>
+        <div class="user-info" style="text-align:left"><strong></strong></div>
+        <div class="pro-topbar-avatar user-avatar">م</div>
+      </div>
+    </div>
+
+    <div class="pro-content">
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-val" id="st-products">--</div><div class="stat-lbl">منتجات نشطة</div></div>
+        <div class="stat-card"><div class="stat-val" id="st-partners">--</div><div class="stat-lbl">صيدلية شريكة</div></div>
+        <div class="stat-card"><div class="stat-val" id="st-alerts" style="color:var(--red)">--</div><div class="stat-lbl">تنبيهات عاجلة</div></div>
+        <div class="stat-card"><div class="stat-val" id="st-resupply" style="color:var(--orange)">--</div><div class="stat-lbl">طلبات معلقة</div></div>
+      </div>
+
+      <div class="tab-bar">
+        <button class="tab-btn active" data-tab="products">📦 منتجاتي</button>
+        <button class="tab-btn" data-tab="alerts">🔔 التنبيهات <span class="badge-dot" id="tab-alerts-badge"></span></button>
+        <button class="tab-btn" data-tab="partners">🤝 الشراكات</button>
+        <button class="tab-btn" data-tab="resupply">🔄 التموين <span class="badge-dot" id="tab-resupply-badge"></span></button>
+        <button class="tab-btn" data-tab="equipment">📦 مخزون المعدات</button>
+      </div>
+
+      <div id="panel-products" class="tab-panel active section-card">
+        <div id="products-content"><div class="spinner" style="margin:2rem auto"></div></div>
+      </div>
+      <div id="panel-alerts" class="tab-panel section-card">
+        <div id="alerts-content"><div class="spinner" style="margin:2rem auto"></div></div>
+      </div>
+      <div id="panel-partners" class="tab-panel section-card">
+        <div id="partners-content"><div class="spinner" style="margin:2rem auto"></div></div>
+      </div>
+      <div id="panel-resupply" class="tab-panel section-card">
+        <div id="resupply-content"><div class="spinner" style="margin:2rem auto"></div></div>
+      </div>
+      <div id="panel-equipment" class="tab-panel section-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;gap:.75rem;flex-wrap:wrap">
+          <h3 style="font-weight:800;margin:0">📦 مخزون المعدات الطبية</h3>
+          <button onclick="showAddEquipmentModal()" class="btn btn-primary btn-sm">+ إضافة معدة</button>
+        </div>
+        <div id="equipment-list"><div class="spinner" style="margin:2rem auto"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Resupply Modal -->
+<div class="modal-overlay hidden" id="resupply-modal">
+  <div class="modal" style="max-width:440px;width:94%">
+    <div class="modal-header">
+      <h3 class="modal-title">طلب تموين</h3>
+      <button class="modal-close" data-modal-close="resupply-modal">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="margin-bottom:1rem;background:var(--muted-bg);border-radius:var(--radius);padding:.85rem;font-size:.875rem">
+        <div style="margin-bottom:.3rem">📦 <strong id="rs-product">--</strong></div>
+        <div style="margin-bottom:.3rem">🏥 <span id="rs-pharmacy">--</span></div>
+        <div>📊 المتبقي: <strong id="rs-remaining">--</strong></div>
+      </div>
+      <form id="resupply-form">
+        <div class="form-group">
+          <label class="form-label">الكمية المطلوبة *</label>
+          <input type="number" id="rs-qty" class="input" min="1" value="10" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">رسالة (اختياري)</label>
+          <textarea id="rs-message" class="input" rows="2" placeholder="ملاحظات إضافية..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%">إرسال الطلب</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- New Partnership Modal -->
+<div class="modal-overlay hidden" id="new-partner-modal">
+  <div class="modal" style="max-width:440px;width:94%">
+    <div class="modal-header">
+      <h3 class="modal-title">طلب شراكة جديدة</h3>
+      <button class="modal-close" data-modal-close="new-partner-modal">✕</button>
+    </div>
+    <div class="modal-body">
+      <form id="new-partner-form">
+        <div class="form-group">
+          <label class="form-label">اختر الصيدلية *</label>
+          <select id="np-pharmacy-id" class="input" required>
+            <option value="">جاري التحميل...</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">رسالة الطلب (اختياري)</label>
+          <textarea id="np-message" class="input" rows="3" placeholder="أهلاً، أرغب في إنشاء شراكة لتوريد منتجاتنا إلى صيدليتكم..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%">إرسال الطلب</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay hidden" id="equipment-modal">
+  <div class="modal" style="max-width:520px;width:94%">
+    <div class="modal-header">
+      <h3 class="modal-title" id="eq-modal-title">إضافة معدة طبية</h3>
+      <button class="modal-close" data-modal-close="equipment-modal">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">اسم المعدة (بالفرنسية/الإنجليزية) *</label>
+          <input type="text" id="eq-name" class="input" placeholder="Wheelchair">
+        </div>
+        <div class="form-group">
+          <label class="form-label">اسم المعدة (بالعربية)</label>
+          <input type="text" id="eq-name-ar" class="input" placeholder="كرسي متحرك">
+        </div>
+        <div class="form-group">
+          <label class="form-label">الفئة *</label>
+          <select id="eq-category" class="input">
+            <option value="">-- اختر الفئة --</option>
+            <option value="mobility">حركة وتنقل</option>
+            <option value="diagnostic">تشخيص</option>
+            <option value="respiratory">تنفس</option>
+            <option value="furniture">أثاث طبي</option>
+            <option value="protective">وقاية</option>
+            <option value="consumable">مستهلكات</option>
+            <option value="rehabilitation">إعادة تأهيل</option>
+            <option value="monitoring">مراقبة</option>
+            <option value="other">أخرى</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">الماركة / العلامة التجارية</label>
+          <input type="text" id="eq-brand" class="input" placeholder="Omron, Philips …">
+        </div>
+        <div class="form-group">
+          <label class="form-label">الوصف</label>
+          <textarea id="eq-description" class="input" rows="2" placeholder="وصف مختصر للمعدة"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">الكمية المتوفرة *</label>
+          <input type="number" id="eq-quantity" class="input" min="0" value="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">السعر (دج)</label>
+          <input type="number" id="eq-price" class="input" min="0" step="0.01" placeholder="اختياري">
+        </div>
+        <div class="form-group">
+          <label class="form-label">حالة التوفر *</label>
+          <select id="eq-availability" class="input">
+            <option value="available">متوفر</option>
+            <option value="limited">محدود</option>
+            <option value="unavailable">غير متوفر</option>
+          </select>
+        </div>
+      </div>
+      <input type="hidden" id="eq-editing-id">
+      <div style="display:flex;gap:.75rem;margin-top:1.25rem">
+        <button onclick="saveEquipment()" class="btn btn-primary" style="flex:1">💾 حفظ</button>
+        <button onclick="closeEquipmentModal()" class="btn btn-outline">إلغاء</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="toast-container" class="toast-container"></div>
+<script src="../../js/config.js"></script>
+<script src="../../js/api.js"></script>
+<script src="../../js/auth-redirects.js"></script>
+<script src="../../js/main.js"></script>
+<script>
+(function() {
+  try { var u = JSON.parse(localStorage.getItem('shifaa_user')); if (!u || u.role !== 'med_rep') { window.location.replace('../login.html'); } } catch(e) { window.location.replace('../login.html'); }
+})();
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn, .pro-nav-item').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  const panel = document.getElementById('panel-' + tab);
+  if (panel) panel.classList.add('active');
+}
+
+function logout() {
+  api.post('/auth/logout.php', {}).catch(() => {});
+  localStorage.removeItem('shifaa_user');
+  window.location.href = '../login.html';
+}
+
+function formatDate(d) { try { return new Date(d).toLocaleDateString('ar-DZ', {year:'numeric',month:'short',day:'numeric'}); } catch { return d; } }
+</script>
+<script src="../../js/dashboard-medrep.js"></script>
+</body>
+</html>

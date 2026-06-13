@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة الإدارة — شفاء ديزاد</title>
+  <link rel="stylesheet" href="../../css/main.css">
+  <link rel="stylesheet" href="../../css/dashboard.css">
+  <link rel="stylesheet" href="../../css/pro-dashboard.css">
+  <style>
+    body { background:var(--muted-bg); }
+    .pro-layout { display:flex; min-height:100vh; }
+    .pro-sidebar { width:250px; background:#0f172a; color:white; padding:1.5rem 1rem; flex-shrink:0; display:flex; flex-direction:column; gap:.35rem; }
+    .pro-sidebar .brand { font-size:1.1rem; font-weight:900; margin-bottom:.5rem; padding:.5rem; color:white; }
+    .pro-sidebar .brand span { color:var(--primary); }
+    .admin-badge { display:inline-flex; align-items:center; gap:.3rem; background:rgba(255,193,7,.15); color:#fbbf24; border-radius:999px; padding:.25rem .75rem; font-size:.72rem; font-weight:800; margin-bottom:1rem; }
+    .pro-nav-item { display:flex; align-items:center; gap:.75rem; padding:.65rem .9rem; border-radius:var(--radius); color:rgba(255,255,255,.65); font-size:.875rem; font-weight:600; cursor:pointer; transition:all .2s; border:none; background:none; width:100%; text-align:right; }
+    .pro-nav-item:hover, .pro-nav-item.active { background:rgba(255,255,255,.1); color:white; }
+    .pro-main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+    .pro-topbar { background:white; border-bottom:1px solid var(--border); padding:1rem 1.5rem; display:flex; align-items:center; justify-content:space-between; }
+    .pro-topbar-avatar { width:36px; height:36px; border-radius:50%; background:#0f172a; color:white; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:.9rem; }
+    .pro-content { flex:1; padding:1.5rem; overflow-y:auto; }
+    .stats-row { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:1rem; margin-bottom:1.5rem; }
+    .stat-card { background:white; border:1.5px solid var(--border); border-radius:var(--radius-lg); padding:1.25rem; }
+    .stat-val  { font-size:1.6rem; font-weight:900; color:var(--primary); }
+    .stat-lbl  { font-size:.8rem; color:var(--muted); margin-top:.2rem; }
+    .section-card { background:white; border:1.5px solid var(--border); border-radius:var(--radius-xl); padding:1.5rem; margin-bottom:1rem; }
+    .pro-section { display:none; }
+    .logout-btn { margin-top:auto; padding:.65rem .9rem; border-radius:var(--radius); color:rgba(255,255,255,.45); font-size:.85rem; font-weight:600; cursor:pointer; border:none; background:none; width:100%; text-align:right; display:flex; align-items:center; gap:.75rem; }
+    .logout-btn:hover { color:white; background:rgba(255,0,0,.15); }
+    .ov-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:.85rem; margin-bottom:1.25rem; }
+    .ov-card { background:var(--muted-bg); border:1.5px solid var(--border); border-radius:var(--radius-lg); padding:1rem; text-align:center; }
+    .ov-val { font-size:1.4rem; font-weight:900; color:var(--primary); }
+    .ov-lbl { font-size:.78rem; color:var(--muted); margin-top:.2rem; }
+    table { width:100%; border-collapse:collapse; font-size:.875rem; }
+    thead tr { border-bottom:1.5px solid var(--border); }
+    th { padding:.6rem; text-align:right; font-weight:800; }
+    td { padding:.6rem; border-bottom:1px solid var(--border); }
+    @media (max-width:768px) { .pro-sidebar { display:none; } }
+  </style>
+</head>
+<body>
+<div class="pro-layout">
+  <aside class="pro-sidebar">
+    <div class="brand">شفاء<span>ديزاد</span></div>
+    <div class="admin-badge">🛡️ لوحة الإدارة</div>
+    <button class="pro-nav-item active">📊 Dashboard</button>
+    <button class="pro-nav-item">👥 المستخدمون</button>
+    <button class="pro-nav-item">🏥 الصيدليات</button>
+    <button class="pro-nav-item">🧪 المخابر</button>
+    <button class="pro-nav-item">💊 مزودو الأدوية</button>
+    <button class="pro-nav-item">🤝 التبرعات</button>
+    <button class="pro-nav-item">⚙️ إعدادات</button>
+    <button class="logout-btn" onclick="logout()">🚪 تسجيل الخروج</button>
+  </aside>
+
+  <div class="pro-main">
+    <div class="pro-topbar">
+      <h2 style="font-size:1rem;font-weight:800">لوحة الإدارة — <span class="admin-name-display">--</span></h2>
+      <div style="display:flex;align-items:center;gap:.75rem">
+        <div class="user-info"><strong></strong></div>
+        <div class="pro-topbar-avatar user-avatar">أ</div>
+      </div>
+    </div>
+
+    <div class="pro-content">
+      <!-- Always-visible top stats -->
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-val" id="stat-users">--</div><div class="stat-lbl">إجمالي المستخدمين</div></div>
+        <div class="stat-card"><div class="stat-val" id="stat-pharmacies">--</div><div class="stat-lbl">الصيدليات</div></div>
+        <div class="stat-card"><div class="stat-val" id="stat-labs">--</div><div class="stat-lbl">المخابر</div></div>
+        <div class="stat-card"><div class="stat-val" id="stat-medreps">--</div><div class="stat-lbl">مزودو الأدوية</div></div>
+        <div class="stat-card"><div class="stat-val" id="stat-medicines">--</div><div class="stat-lbl">الأدوية</div></div>
+        <div class="stat-card"><div class="stat-val" id="stat-subscriptions">--</div><div class="stat-lbl">اشتراكات نشطة</div></div>
+        <div class="stat-card"><div class="stat-val" id="stat-donations">--</div><div class="stat-lbl">التبرعات</div></div>
+      </div>
+
+      <!-- SECTION: Overview -->
+      <div id="section-overview" class="pro-section">
+        <div class="section-card">
+          <h3 style="font-weight:800;margin-bottom:1rem">نظرة عامة على المنصة</h3>
+          <div class="ov-grid">
+            <div class="ov-card"><div class="ov-val" id="ov-users">--</div><div class="ov-lbl">مستخدمون</div></div>
+            <div class="ov-card"><div class="ov-val" id="ov-pharmacies">--</div><div class="ov-lbl">صيدليات</div></div>
+            <div class="ov-card"><div class="ov-val" id="ov-labs">--</div><div class="ov-lbl">مخابر</div></div>
+            <div class="ov-card"><div class="ov-val" id="ov-medreps">--</div><div class="ov-lbl">مزودو الأدوية</div></div>
+            <div class="ov-card"><div class="ov-val" id="ov-medservices">--</div><div class="ov-lbl">المعدات الطبية</div></div>
+            <div class="ov-card"><div class="ov-val" id="ov-equipment">--</div><div class="ov-lbl">المعدات الطبية</div></div>
+            <div class="ov-card"><div class="ov-val" id="ov-donations">--</div><div class="ov-lbl">تبرعات</div></div>
+          </div>
+          <div id="role-dist-list"></div>
+        </div>
+
+        <div class="section-card">
+          <h3 style="font-weight:800;margin-bottom:1rem">أحدث المستخدمين</h3>
+          <div style="overflow-x:auto">
+            <table>
+              <thead><tr>
+                <th>المستخدم</th><th>الدور</th><th>التحقق</th><th>الحالة</th><th>تاريخ التسجيل</th><th>إجراء</th>
+              </tr></thead>
+              <tbody id="recent-users-tbody">
+                <tr><td colspan="6" style="text-align:center;padding:2rem"><div class="spinner"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: Users Management -->
+      <div id="section-users-manage" class="pro-section">
+        <div class="section-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:.75rem">
+            <h3 style="font-weight:800">إدارة المستخدمين</h3>
+            <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+              <input type="text" id="user-search-input" class="input" placeholder="بحث بالاسم أو البريد..." style="max-width:200px;font-size:.85rem">
+              <select id="user-role-filter" class="input" style="font-size:.85rem">
+                <option value="">كل الأدوار</option>
+                <option value="patient">مريض</option>
+                <option value="pharmacist">صيدلاني</option>
+                <option value="med_rep">مزود أدوية</option>
+                <option value="lab">مخبر</option>
+                <option value="medical_services">معدات طبية</option>
+              </select>
+              <button class="btn btn-primary btn-sm" id="user-search-btn">بحث</button>
+            </div>
+          </div>
+          <div style="overflow-x:auto">
+            <table>
+              <thead><tr>
+                <th>الاسم</th><th>البريد</th><th>الدور</th><th>التحقق</th><th>الحالة</th><th>إجراء</th>
+              </tr></thead>
+              <tbody id="users-manage-tbody">
+                <tr><td colspan="6" style="text-align:center;padding:1rem;color:var(--muted)">اضغط "بحث" للعرض</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: Pharmacies -->
+      <div id="section-pharmacies" class="pro-section">
+        <div class="section-card">
+          <h3 style="font-weight:800;margin-bottom:1rem">إدارة الصيدليات</h3>
+          <div style="overflow-x:auto">
+            <table>
+              <thead><tr><th>الاسم</th><th>الولاية</th><th>الحالة</th><th>النشاط</th><th>إجراء</th></tr></thead>
+              <tbody id="pharmacies-tbody">
+                <tr><td colspan="5" style="text-align:center;padding:2rem"><div class="spinner"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: Labs -->
+      <div id="section-labs" class="pro-section">
+        <div class="section-card">
+          <h3 style="font-weight:800;margin-bottom:1rem">إدارة المخابر</h3>
+          <div style="overflow-x:auto">
+            <table>
+              <thead><tr><th>الاسم</th><th>الولاية</th><th>الهاتف</th><th>إجراء</th></tr></thead>
+              <tbody id="labs-tbody">
+                <tr><td colspan="4" style="text-align:center;padding:2rem"><div class="spinner"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: Med Reps -->
+      <div id="section-medreps" class="pro-section">
+        <div class="section-card">
+          <h3 style="font-weight:800;margin-bottom:1rem">إدارة مزودي الأدوية</h3>
+          <div style="overflow-x:auto">
+            <table>
+              <thead><tr><th>الاسم</th><th>الهاتف</th><th>البريد</th><th>الحالة</th><th>إجراء</th></tr></thead>
+              <tbody id="medreps-tbody">
+                <tr><td colspan="5" style="text-align:center;padding:2rem"><div class="spinner"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: Donations -->
+      <div id="section-donations" class="pro-section">
+        <div class="section-card">
+          <h3 style="font-weight:800;margin-bottom:1rem">إدارة التبرعات</h3>
+          <div style="overflow-x:auto">
+            <table>
+              <thead><tr><th>العنصر</th><th>الولاية</th><th>الحالة</th><th>التاريخ</th><th>الإجراءات</th></tr></thead>
+              <tbody id="donations-tbody">
+                <tr><td colspan="6" style="text-align:center;padding:2rem"><div class="spinner"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: Settings -->
+      <div id="section-settings" class="pro-section">
+        <div class="section-card">
+          <h3 style="font-weight:800;margin-bottom:1.25rem">إعدادات المنصة</h3>
+          <div style="max-width:480px">
+            <div class="form-group">
+              <label class="form-label">اسم المنصة</label>
+              <input type="text" id="s-platform-name" class="input" placeholder="شفاء ديزاد">
+            </div>
+            <div class="form-group">
+              <label class="form-label">البريد الإلكتروني للتواصل</label>
+              <input type="email" id="s-contact-email" class="input" placeholder="contact@shifaa-dz.com">
+            </div>
+            <div class="form-group">
+              <label class="form-label">رقم الهاتف</label>
+              <input type="tel" id="s-contact-phone" class="input" placeholder="+213 XXX XXX XXX">
+            </div>
+            <button class="btn btn-primary" id="btn-save-settings">حفظ الإعدادات</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div id="toast-container" class="toast-container"></div>
+<script src="../../js/config.js"></script>
+<script src="../../js/api.js"></script>
+<script src="../../js/auth-redirects.js"></script>
+<script src="../../js/main.js"></script>
+<script>
+function logout() {
+  api.post('/auth/logout.php', {}).catch(() => {});
+  localStorage.removeItem('shifaa_user');
+  window.location.href = '../admin-login.html';
+}
+function formatDate(d) { try { return new Date(d).toLocaleDateString('ar-DZ', {year:'numeric',month:'short',day:'numeric'}); } catch { return d; } }
+</script>
+<script src="../../js/dashboard-admin.js"></script>
+</body>
+</html>

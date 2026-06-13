@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تواصل معنا — شفاء ديزاد</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/contact.css">
+</head>
+<body>
+<nav class="navbar">
+  <a href="../index.html" class="navbar-brand">
+    <div class="logo-icon" style="background:linear-gradient(135deg,#10b981,#14b8a6);border-radius:14px;width:42px;height:42px;display:flex;align-items:center;justify-content:center;">
+      <div style="width:18px;height:18px;border:3px solid white;border-radius:6px;transform:rotate(45deg);position:relative;"><div style="position:absolute;top:50%;left:50%;width:8px;height:8px;background:white;border-radius:2px;transform:translate(-50%,-50%);"></div></div>
+    </div>
+    <span>شفاء<span style="color:var(--primary)">ديزاد</span></span>
+  </a>
+  <ul class="navbar-links">
+    <li><a href="../index.html">الرئيسية</a></li>
+    <li><a href="search.html">الأدوية والمستلزمات</a></li>
+    <li><a href="pharmacies.html">الصيدليات</a></li>
+    <li><a href="donations.html">التضامن الصحي</a></li>
+    <li><a href="labs.html">مخابر التحاليل</a></li>
+    <li><a href="pricing.html">الاشتراكات</a></li>
+  </ul>
+  <div class="navbar-actions">
+    <a href="contact.html" class="btn btn-ghost btn-sm active">تواصل معنا</a>
+    <a href="login.html" class="btn btn-primary btn-sm" id="nav-login-btn">تسجيل الدخول</a>
+  </div>
+  <button class="navbar-toggle" id="navbar-toggle" aria-label="القائمة"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="../index.html">🏠 الرئيسية</a>
+  <a href="search.html">🔍 الأدوية والمستلزمات</a>
+  <a href="pharmacies.html">🏥 الصيدليات</a>
+  <a href="donations.html">🤝 التضامن الصحي</a>
+  <a href="labs.html">🧪 مخابر التحاليل</a>
+  <a href="pricing.html">💳 الاشتراكات</a>
+  <a href="contact.html">📞 تواصل معنا</a>
+  <a href="login.html">🔐 تسجيل الدخول</a>
+</div>
+
+<section class="contact-page">
+  <div class="container">
+    <div class="contact-grid">
+      <div class="contact-info">
+        <span class="section-label" style="display:inline-block;margin-bottom:.5rem">تواصل معنا</span>
+        <h2>نحن هنا لمساعدتك</h2>
+        <p>هل لديك سؤال، اقتراح أو شراكة محتملة؟ تواصل معنا وسنرد في أقرب وقت ممكن.</p>
+        <div class="contact-item">
+          <div class="contact-icon">📧</div>
+          <div>
+            <strong>البريد الإلكتروني</strong>
+            <span>contact@shifaa-dz.com</span>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">📞</div>
+          <div>
+            <strong>الهاتف</strong>
+            <span>+213 XXX XXX XXX</span>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">📍</div>
+          <div>
+            <strong>العنوان</strong>
+            <span>الجزائر العاصمة، الجزائر</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-form-card">
+        <h3>أرسل رسالة</h3>
+        <form id="contact-form">
+          <div class="form-group">
+            <label class="form-label">الاسم الكامل *</label>
+            <input type="text" id="c-name" class="input" required placeholder="اسمك الكامل">
+          </div>
+          <div class="form-group">
+            <label class="form-label">البريد الإلكتروني *</label>
+            <input type="email" id="c-email" class="input" required placeholder="email@example.com">
+          </div>
+          <div class="form-group">
+            <label class="form-label">الرسالة *</label>
+            <textarea id="c-message" class="input" rows="5" required placeholder="اكتب رسالتك هنا..."></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%">إرسال الرسالة</button>
+        </form>
+        <div id="success-msg" class="success-msg">✅ تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="toast-container" class="toast-container"></div>
+<script src="../js/config.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/auth-redirects.js"></script>
+<script src="../js/main.js"></script>
+<script src="../js/contact.js"></script>
+</body>
+</html>

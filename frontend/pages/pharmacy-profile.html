@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ملف الصيدلية — شفاء ديزاد</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/pharmacies.css">
+  <style>
+    .profile-hero { background:linear-gradient(135deg,#10b981,#059669); color:white; padding:3rem 0 2rem; }
+    .profile-badge { display:inline-flex; align-items:center; gap:.5rem; background:rgba(255,255,255,.2); border-radius:999px; padding:.4rem 1rem; font-size:.8rem; font-weight:700; margin-bottom:1rem; }
+    .profile-name { font-size:2rem; font-weight:900; margin-bottom:.5rem; }
+    .profile-meta { display:flex; flex-wrap:wrap; gap:1rem; font-size:.9rem; opacity:.9; }
+    .profile-meta span { display:flex; align-items:center; gap:.35rem; }
+    .profile-body { max-width:900px; margin:0 auto; padding:2rem 1rem; }
+    .info-card { background:white; border:1.5px solid var(--border); border-radius:var(--radius-xl); padding:1.5rem; margin-bottom:1.5rem; }
+    .info-card h3 { font-size:1rem; font-weight:800; margin-bottom:1rem; color:var(--primary); }
+    .info-row { display:flex; gap:.5rem; align-items:flex-start; padding:.5rem 0; border-bottom:1px solid var(--border-light,#f1f5f9); }
+    .info-row:last-child { border-bottom:none; }
+    .info-icon { font-size:1.1rem; flex-shrink:0; }
+    .social-links { display:flex; gap:.75rem; flex-wrap:wrap; margin-top:.5rem; }
+    .social-btn { display:inline-flex; align-items:center; gap:.4rem; padding:.4rem .9rem; border-radius:var(--radius); background:var(--muted-bg); color:var(--text); font-size:.82rem; font-weight:700; text-decoration:none; transition:all .2s; }
+    .social-btn:hover { background:var(--primary); color:white; }
+    .medicines-toolbar { display:flex; gap:.75rem; flex-wrap:wrap; margin-bottom:1rem; }
+    .medicines-toolbar input, .medicines-toolbar select { flex:1; min-width:140px; padding:.5rem .75rem; border:1.5px solid var(--border); border-radius:var(--radius); font-family:var(--font); font-size:.85rem; }
+    .med-table { width:100%; border-collapse:collapse; font-size:.875rem; }
+    .med-table thead tr { border-bottom:2px solid var(--border); background:var(--muted-bg); }
+    .med-table th { padding:.65rem .75rem; text-align:right; font-weight:800; }
+    .med-table td { padding:.65rem .75rem; border-bottom:1px solid var(--border); }
+    .med-table tr:hover { background:#f8fafc; }
+    .pagination { display:flex; gap:.5rem; justify-content:center; margin-top:1.25rem; flex-wrap:wrap; }
+    .page-btn { padding:.4rem .85rem; border:1.5px solid var(--border); border-radius:var(--radius); cursor:pointer; font-weight:700; background:white; }
+    .page-btn.active { background:var(--primary); color:white; border-color:var(--primary); }
+    .empty-state { text-align:center; padding:3rem; color:var(--muted); }
+    .empty-icon { font-size:2.5rem; margin-bottom:.75rem; }
+    @media (max-width:600px) { .profile-name { font-size:1.4rem; } .med-table th:nth-child(n+4), .med-table td:nth-child(n+4) { display:none; } }
+  </style>
+</head>
+<body>
+<nav class="navbar">
+  <a href="../index.html" class="navbar-brand">
+    <div class="logo-icon" style="background:linear-gradient(135deg,#10b981,#14b8a6);border-radius:14px;width:42px;height:42px;display:flex;align-items:center;justify-content:center;">
+      <div style="width:18px;height:18px;border:3px solid white;border-radius:6px;transform:rotate(45deg);position:relative;"><div style="position:absolute;top:50%;left:50%;width:8px;height:8px;background:white;border-radius:2px;transform:translate(-50%,-50%);"></div></div>
+    </div>
+    <span>شفاء<span style="color:var(--primary)">ديزاد</span></span>
+  </a>
+  <ul class="navbar-links">
+    <li><a href="../index.html">الرئيسية</a></li>
+    <li><a href="search.html">الأدوية</a></li>
+    <li><a href="pharmacies.html" class="active">الصيدليات</a></li>
+    <li><a href="labs.html">المخابر</a></li>
+    <li><a href="donations.html">التضامن الصحي</a></li>
+    <li><a href="pricing.html">الاشتراكات</a></li>
+  </ul>
+  <div class="navbar-actions">
+    <a href="login.html" class="btn btn-primary btn-sm" id="nav-login-btn">تسجيل الدخول</a>
+  </div>
+</nav>
+
+<div id="page-loader" style="text-align:center;padding:5rem">
+  <div class="spinner" style="margin:0 auto;width:40px;height:40px;border-width:4px"></div>
+  <p style="margin-top:1rem;color:var(--muted)">جاري التحميل…</p>
+</div>
+
+<div id="profile-hero" style="display:none">
+  <section class="profile-hero">
+    <div class="container">
+      <div class="profile-badge">🏥 صيدلية</div>
+      <h1 class="profile-name" id="ph-name">—</h1>
+      <div class="profile-meta">
+        <span>📍 <span id="ph-wilaya">—</span> — <span id="ph-city">—</span></span>
+        <span id="ph-hours-meta" style="display:none">🕐 <span id="ph-hours-display">—</span></span>
+        <span id="ph-phone-meta" style="display:none">📞 <span id="ph-phone-display">—</span></span>
+      </div>
+    </div>
+  </section>
+
+  <div class="profile-body">
+    <div class="info-card">
+      <h3>📋 معلومات الصيدلية</h3>
+      <div class="info-row" id="row-address" style="display:none">
+        <span class="info-icon">🏠</span>
+        <div>
+          <div id="ph-address">—</div>
+          <a id="ph-map-link" href="#" target="_blank" style="font-size:.82rem;color:var(--primary);font-weight:700">عرض على الخريطة ↗</a>
+        </div>
+      </div>
+      <div class="info-row" id="row-hours" style="display:none">
+        <span class="info-icon">🕐</span>
+        <div id="ph-hours">—</div>
+      </div>
+      <div class="info-row" id="row-phone" style="display:none">
+        <span class="info-icon">📞</span>
+        <a id="ph-phone" href="#" style="color:var(--primary);font-weight:700">—</a>
+      </div>
+      <div class="info-row" id="row-email" style="display:none">
+        <span class="info-icon">✉️</span>
+        <a id="ph-email" href="#" style="color:var(--primary)">—</a>
+      </div>
+      <div class="info-row" id="row-website" style="display:none">
+        <span class="info-icon">🌐</span>
+        <a id="ph-website" href="#" target="_blank" style="color:var(--primary)">—</a>
+      </div>
+      <div class="info-row" id="row-social" style="display:none">
+        <span class="info-icon">🔗</span>
+        <div class="social-links" id="ph-socials"></div>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <h3>💊 الأدوية المتوفرة</h3>
+      <div class="medicines-toolbar">
+        <input type="search" id="med-search" placeholder="🔍 ابحث عن دواء…" oninput="filterMeds()">
+        <select id="med-form-filter" onchange="filterMeds()">
+          <option value="">كل الأشكال</option>
+          <option value="tablet">أقراص</option>
+          <option value="syrup">شراب</option>
+          <option value="injection">حقن</option>
+          <option value="cream">كريم</option>
+          <option value="drops">قطرات</option>
+          <option value="capsule">كبسول</option>
+          <option value="other">أخرى</option>
+        </select>
+        <select id="med-avail-filter" onchange="filterMeds()">
+          <option value="">كل الحالات</option>
+          <option value="available">متوفر</option>
+          <option value="limited">محدود</option>
+          <option value="unavailable">غير متوفر</option>
+        </select>
+        <select id="med-sort" onchange="filterMeds()">
+          <option value="name">ترتيب: الاسم</option>
+          <option value="availability">ترتيب: التوفر</option>
+          <option value="updated">ترتيب: آخر تحديث</option>
+        </select>
+      </div>
+
+      <div id="med-count" style="font-size:.82rem;color:var(--muted);margin-bottom:.75rem"></div>
+      <div id="med-table-wrap">
+        <table class="med-table">
+          <thead>
+            <tr>
+              <th>اسم الدواء</th>
+              <th>الماركة</th>
+              <th>الجرعة</th>
+              <th>الشكل</th>
+              <th>الكمية</th>
+              <th>الحالة</th>
+              <th>آخر تحديث</th>
+            </tr>
+          </thead>
+          <tbody id="med-tbody"></tbody>
+        </table>
+        <div id="med-empty" class="empty-state" style="display:none">
+          <div class="empty-icon">💊</div>
+          <p>لا توجد أدوية مطابقة للبحث</p>
+        </div>
+      </div>
+      <div class="pagination" id="med-pagination"></div>
+    </div>
+  </div>
+</div>
+
+<div id="profile-error" style="display:none;text-align:center;padding:4rem">
+  <div style="font-size:3rem;margin-bottom:1rem">❌</div>
+  <h2>الصيدلية غير موجودة</h2>
+  <a href="pharmacies.html" class="btn btn-primary" style="margin-top:1.5rem">← العودة للصيدليات</a>
+</div>
+
+<script src="../js/config.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/main.js"></script>
+<script>
+  const FORM_LABELS = {
+    tablet:'أقراص', syrup:'شراب', injection:'حقن',
+    cream:'كريم', drops:'قطرات', capsule:'كبسول', other:'أخرى'
+  };
+  const AVAIL_BADGE = { available:'badge-secondary', limited:'badge-orange', unavailable:'badge-red' };
+  const AVAIL_LABEL = { available:'متوفر', limited:'محدود', unavailable:'غير متوفر' };
+
+  let allMeds = [], currentPage = 1;
+  const PAGE_SIZE = 15;
+
+  function esc(s) { return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function fmtDate(d) { if (!d) return '—'; try { return new Date(d).toLocaleDateString('ar-DZ'); } catch { return d; } }
+
+  async function loadPharmacy() {
+    const params = new URLSearchParams(window.location.search);
+    const id = parseInt(params.get('id'));
+    if (!id) { showError(); return; }
+
+    try {
+      const data = await api.get('/pharmacies/detail.php', { id });
+      const ph = data.data || data;
+      if (!ph || !ph.id) { showError(); return; }
+
+      document.title = `${ph.name} — شفاء ديزاد`;
+      document.getElementById('ph-name').textContent = ph.name || '—';
+      document.getElementById('ph-wilaya').textContent = ph.wilaya || '—';
+      document.getElementById('ph-city').textContent = ph.city || ph.commune || '—';
+
+      showIfSet('row-address', ph.address, () => {
+        document.getElementById('ph-address').textContent = ph.address;
+        const mapQ = encodeURIComponent(`${ph.name} ${ph.wilaya || ''} Algeria`);
+        document.getElementById('ph-map-link').href = `https://www.google.com/maps/search/${mapQ}`;
+      });
+      showIfSet('row-hours', ph.opening_hours || ph.hours, () => {
+        document.getElementById('ph-hours').textContent = ph.opening_hours || ph.hours;
+        document.getElementById('ph-hours-meta').style.display = 'flex';
+        document.getElementById('ph-hours-display').textContent = ph.opening_hours || ph.hours;
+      });
+      showIfSet('row-phone', ph.phone, () => {
+        const tel = document.getElementById('ph-phone');
+        tel.textContent = ph.phone;
+        tel.href = `tel:${ph.phone}`;
+        document.getElementById('ph-phone-meta').style.display = 'flex';
+        document.getElementById('ph-phone-display').textContent = ph.phone;
+      });
+      showIfSet('row-email', ph.email, () => {
+        const em = document.getElementById('ph-email');
+        em.textContent = ph.email;
+        em.href = `mailto:${ph.email}`;
+      });
+      showIfSet('row-website', ph.website, () => {
+        const ws = document.getElementById('ph-website');
+        ws.textContent = ph.website;
+        ws.href = ph.website;
+      });
+
+      const socials = [];
+      if (ph.facebook)  socials.push(`<a href="${esc(ph.facebook)}" target="_blank" class="social-btn">📘 Facebook</a>`);
+      if (ph.instagram) socials.push(`<a href="${esc(ph.instagram)}" target="_blank" class="social-btn">📷 Instagram</a>`);
+      if (ph.linkedin)  socials.push(`<a href="${esc(ph.linkedin)}" target="_blank" class="social-btn">💼 LinkedIn</a>`);
+      if (socials.length) {
+        document.getElementById('row-social').style.display = 'flex';
+        document.getElementById('ph-socials').innerHTML = socials.join('');
+      }
+
+      allMeds = Array.isArray(ph.medicines) ? ph.medicines : [];
+      filterMeds();
+
+      document.getElementById('page-loader').style.display = 'none';
+      document.getElementById('profile-hero').style.display = 'block';
+    } catch (err) {
+      console.error(err);
+      showError();
+    }
+  }
+
+  function showIfSet(rowId, value, cb) {
+    if (value) {
+      document.getElementById(rowId).style.display = 'flex';
+      cb();
+    }
+  }
+
+  function showError() {
+    document.getElementById('page-loader').style.display = 'none';
+    document.getElementById('profile-error').style.display = 'block';
+  }
+
+  function filterMeds() {
+    const q = (document.getElementById('med-search')?.value || '').toLowerCase();
+    const form = document.getElementById('med-form-filter')?.value || '';
+    const avail = document.getElementById('med-avail-filter')?.value || '';
+    const sort = document.getElementById('med-sort')?.value || 'name';
+
+    let meds = allMeds.filter(m => {
+      const name = ((m.name || m.product_name || '') + ' ' + (m.brand || '')).toLowerCase();
+      if (q && !name.includes(q)) return false;
+      if (form && (m.form_type || '') !== form) return false;
+      if (avail && (m.availability || '') !== avail) return false;
+      return true;
+    });
+
+    meds.sort((a, b) => {
+      if (sort === 'name') return (a.name || a.product_name || '').localeCompare(b.name || b.product_name || '');
+      if (sort === 'availability') return (a.availability || '').localeCompare(b.availability || '');
+      if (sort === 'updated') return new Date(b.updated_at || b.last_updated || 0) - new Date(a.updated_at || a.last_updated || 0);
+      return 0;
+    });
+
+    currentPage = 1;
+    renderMeds(meds);
+  }
+
+  function renderMeds(meds) {
+    const count = meds.length;
+    const total = allMeds.length;
+    const pages = Math.ceil(count / PAGE_SIZE) || 1;
+    const sliced = meds.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+
+    document.getElementById('med-count').textContent =
+      count === total ? `${count} دواء` : `${count} من ${total} دواء`;
+
+    const tbody = document.getElementById('med-tbody');
+    const empty = document.getElementById('med-empty');
+
+    if (!sliced.length) {
+      tbody.innerHTML = '';
+      empty.style.display = 'block';
+    } else {
+      empty.style.display = 'none';
+      tbody.innerHTML = sliced.map(m => `
+        <tr>
+          <td><strong>${esc(m.name || m.product_name || '—')}</strong>
+            ${m.name_ar ? `<div style="font-size:.78rem;color:var(--muted)">${esc(m.name_ar)}</div>` : ''}
+          </td>
+          <td>${esc(m.brand || '—')}</td>
+          <td>${esc(m.dosage || '—')}</td>
+          <td>${esc(FORM_LABELS[m.form_type] || m.form_type || '—')}</td>
+          <td>${m.quantity ?? '—'}</td>
+          <td><span class="badge ${AVAIL_BADGE[m.availability] || 'badge-muted'}">${AVAIL_LABEL[m.availability] || '—'}</span></td>
+          <td style="font-size:.78rem;color:var(--muted)">${fmtDate(m.updated_at || m.last_updated)}</td>
+        </tr>
+      `).join('');
+    }
+
+    const pg = document.getElementById('med-pagination');
+    pg.innerHTML = '';
+    if (pages > 1) {
+      for (let i = 1; i <= pages; i++) {
+        const btn = document.createElement('button');
+        btn.textContent = i;
+        btn.className = 'page-btn' + (i === currentPage ? ' active' : '');
+        btn.onclick = () => { currentPage = i; renderMeds(meds); };
+        pg.appendChild(btn);
+      }
+    }
+  }
+
+  loadPharmacy();
+</script>
+</body>
+</html>

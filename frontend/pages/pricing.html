@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الاشتراكات — شفاء ديزاد</title>
+  <link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+<nav class="navbar">
+  <a href="../index.html" class="navbar-brand">
+    <div class="logo-icon" style="background:linear-gradient(135deg,#10b981,#14b8a6);border-radius:14px;width:42px;height:42px;display:flex;align-items:center;justify-content:center;">
+      <div style="width:18px;height:18px;border:3px solid white;border-radius:6px;transform:rotate(45deg);position:relative;"><div style="position:absolute;top:50%;left:50%;width:8px;height:8px;background:white;border-radius:2px;transform:translate(-50%,-50%);"></div></div>
+    </div>
+    <span>شفاء<span style="color:var(--primary)">ديزاد</span></span>
+  </a>
+  <ul class="navbar-links">
+    <li><a href="../index.html">الرئيسية</a></li>
+    <li><a href="search.html">الأدوية والمستلزمات</a></li>
+    <li><a href="pharmacies.html">الصيدليات</a></li>
+    <li><a href="donations.html">التضامن الصحي</a></li>
+    <li><a href="labs.html">مخابر التحاليل</a></li>
+    <li><a href="pricing.html" class="active">الاشتراكات</a></li>
+  </ul>
+  <div class="navbar-actions">
+    <a href="contact.html" class="btn btn-ghost btn-sm">تواصل معنا</a>
+    <a href="login.html" class="btn btn-primary btn-sm" id="nav-login-btn">تسجيل الدخول</a>
+  </div>
+  <button class="navbar-toggle" id="navbar-toggle" aria-label="القائمة"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="../index.html">🏠 الرئيسية</a>
+  <a href="search.html">🔍 الأدوية والمستلزمات</a>
+  <a href="pharmacies.html">🏥 الصيدليات</a>
+  <a href="donations.html">🤝 التضامن الصحي</a>
+  <a href="labs.html">🧪 مخابر التحاليل</a>
+  <a href="pricing.html">💳 الاشتراكات</a>
+  <a href="contact.html">📞 تواصل معنا</a>
+  <a href="login.html">🔐 تسجيل الدخول</a>
+</div>
+
+<!-- Hero -->
+<section style="background:linear-gradient(135deg,#10b981,#059669);color:white;padding:3rem 0;text-align:center">
+  <div class="container">
+    <span style="background:rgba(255,255,255,.2);border-radius:999px;padding:.3rem 1.1rem;font-size:.85rem;font-weight:700;display:inline-block;margin-bottom:1rem">للمهنيين الصحيين</span>
+    <h1 style="font-size:2rem;font-weight:900;margin-bottom:.6rem">اشتراكات المنصة</h1>
+    <p style="opacity:.85;max-width:520px;margin:0 auto .9rem">احصل على لوحة تحكم كاملة وظهور أمام آلاف المرضى عبر 69 ولاية</p>
+    <div style="display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);border-radius:999px;padding:.5rem 1.25rem;font-size:.9rem;font-weight:800">
+      🎁 3 أشهر مجانية عند الاشتراك الآن
+    </div>
+  </div>
+</section>
+
+<!-- Profession tabs -->
+<section class="section" style="padding-bottom:0">
+  <div class="container">
+    <div style="display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center;margin-bottom:2rem">
+      <button class="prof-tab active" data-role="pharmacy"         onclick="filterProf(this,'pharmacy')">🏥 الصيدليات</button>
+      <button class="prof-tab"        data-role="lab"              onclick="filterProf(this,'lab')">🧪 مخابر التحاليل</button>
+      <button class="prof-tab"        data-role="med_rep"          onclick="filterProf(this,'med_rep')">💼 مزودو الأدوية الطبيون</button>
+      <button class="prof-tab"        data-role="medical_services" onclick="filterProf(this,'medical_services')">🩺 المعدات الطبية</button>
+    </div>
+    <div id="plans-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem;max-width:700px;margin:0 auto 3rem">
+      <div class="skeleton" style="height:400px;border-radius:var(--radius-xl)"></div>
+      <div class="skeleton" style="height:400px;border-radius:var(--radius-xl)"></div>
+    </div>
+  </div>
+</section>
+
+<!-- Who is this for -->
+<section class="section" style="background:white">
+  <div class="container" style="max-width:720px;margin:0 auto;text-align:center">
+    <h2 style="font-weight:900;margin-bottom:.5rem">لمن هذه الاشتراكات؟</h2>
+    <p style="color:var(--muted);font-size:.9rem;margin-bottom:1.5rem">كل مهني صحي يمكنه الانضمام والاستفادة من الشبكة الرقمية</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:1rem;margin-bottom:2rem">
+      <div class="who-card"><div>🏥</div><strong>الصيدليات</strong><div>إدارة المخزون والشراكات</div></div>
+      <div class="who-card"><div>🧪</div><strong>مخابر التحاليل</strong><div>عرض التحاليل والأسعار</div></div>
+      <div class="who-card"><div>💼</div><strong>مزودو الأدوية الطبيون</strong><div>تنبيهات السوق وشبكة الشراكات</div></div>
+      <div class="who-card"><div>🩺</div><strong>المعدات الطبية</strong><div>باراصيدلية وأجهزة طبية</div></div>
+    </div>
+    <a href="contact.html" class="btn btn-outline btn-lg">تواصل معنا للاستفسار</a>
+  </div>
+</section>
+
+<style>
+.prof-tab {
+  background:white; border:1.5px solid var(--border);
+  border-radius:999px; padding:.55rem 1.1rem;
+  font-size:.875rem; font-weight:700; cursor:pointer;
+  font-family:var(--font); color:var(--text); transition:all .2s;
+}
+.prof-tab:hover, .prof-tab.active {
+  background:var(--primary); color:white;
+  border-color:var(--primary); box-shadow:0 4px 16px rgba(16,185,129,.25);
+}
+.who-card {
+  border:1.5px solid var(--border); border-radius:var(--radius-lg);
+  padding:1.25rem; text-align:center; font-size:.82rem; color:var(--muted);
+}
+.who-card div:first-child { font-size:2rem; margin-bottom:.35rem; }
+.who-card strong { display:block; font-size:.9rem; font-weight:800; color:var(--text); margin-bottom:.25rem; }
+</style>
+
+<div id="toast-container" class="toast-container"></div>
+<script src="../js/config.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/auth-redirects.js"></script>
+<script src="../js/main.js"></script>
+<script>
+let allPlans = [];
+let currentRole = 'pharmacy';
+
+function formatNum(n) { return Number(n).toLocaleString('ar-DZ'); }
+
+function renderPlans(role) {
+  const grid = document.getElementById('plans-grid');
+  const plans = allPlans.filter(p => p.role_type === role);
+  if (!plans.length) { grid.innerHTML = '<div style="text-align:center;color:var(--muted);grid-column:1/-1;padding:2rem">لا توجد باقات</div>'; return; }
+
+  grid.innerHTML = plans.map((p) => {
+    const isPro = p.tier === 'pro';
+    const border = isPro ? 'var(--primary)' : 'var(--border)';
+    const shadow = isPro ? 'box-shadow:0 10px 40px rgba(16,185,129,.18);' : '';
+    return `
+    <div style="background:white;border:2px solid ${border};border-radius:var(--radius-xl);padding:2rem;position:relative;${shadow}">
+      ${isPro ? '<div style="position:absolute;top:-13px;right:50%;transform:translateX(50%);background:var(--primary);color:white;font-size:.72rem;font-weight:900;padding:.25rem 1.1rem;border-radius:999px;white-space:nowrap">⭐ الأكثر طلباً</div>' : ''}
+      <div style="display:inline-block;background:${isPro ? 'var(--primary)' : 'var(--muted-bg)'};color:${isPro ? 'white' : 'var(--muted)'};font-size:.7rem;font-weight:800;padding:.2rem .8rem;border-radius:999px;margin-bottom:.85rem">${isPro ? 'Pro' : 'Starter'}</div>
+      <h3 style="font-weight:900;font-size:1rem;margin-bottom:.25rem">${isPro ? 'الاحترافي' : 'المبتدئ'}</h3>
+      <div style="font-size:2rem;font-weight:900;color:var(--primary);margin-bottom:.3rem">${formatNum(p.price)} <span style="font-size:.85rem;font-weight:400;color:var(--muted)">دج/شهر</span></div>
+      <div style="display:flex;align-items:center;gap:.4rem;background:#fef3c7;border:1px solid #fde68a;border-radius:8px;padding:.4rem .75rem;margin-bottom:1rem">
+        <span style="font-size:1rem">✨</span>
+        <span style="font-size:.82rem;font-weight:800;color:#d97706">🎁 3 أشهر مجانية</span>
+      </div>
+      ${p.features ? `<ul style="list-style:none;padding:0;margin:0 0 1.25rem;display:flex;flex-direction:column;gap:.5rem">
+        ${p.features.map(f => `<li style="font-size:.835rem;display:flex;align-items:flex-start;gap:.4rem"><span style="color:var(--primary);font-weight:900;flex-shrink:0">✓</span><span>${f}</span></li>`).join('')}
+      </ul>` : ''}
+      <button onclick="startSubscription('${p.id}','${p.role_type}',${p.price},'${p.tier}')"
+        class="btn btn-${isPro ? 'primary' : 'outline'}"
+        id="sub-btn-${p.id}"
+        style="width:100%;padding:.75rem;font-weight:800">
+        ابدأ 3 أشهر مجاناً ←
+      </button>
+    </div>`;
+  }).join('');
+}
+
+function filterProf(btn, role) {
+  document.querySelectorAll('.prof-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentRole = role;
+  renderPlans(role);
+}
+
+async function startSubscription(planId, roleType, price, tier) {
+  const user = (() => { try { return JSON.parse(localStorage.getItem('shifaa_user')); } catch { return null; } })();
+  if (!user) {
+    showToast('يرجى تسجيل الدخول أولاً', 'info');
+    setTimeout(() => { window.location.href = 'login.html?redirect=pricing'; }, 1000);
+    return;
+  }
+  const btn = document.getElementById('sub-btn-' + planId);
+  if (btn) { btn.disabled = true; btn.textContent = 'جارٍ التفعيل...'; }
+  try {
+    const res = await api.post('/subscriptions/subscribe.php', { plan_id: planId, role_type: roleType, price, tier });
+    if (res.new_role) {
+      const updated = { ...user, role: res.new_role };
+      localStorage.setItem('shifaa_user', JSON.stringify(updated));
+    }
+    showToast('✨ ' + (res.message || 'تم تفعيل الاشتراك! 3 أشهر مجانية.'), 'success');
+    const role = res.new_role || user.role;
+    setTimeout(() => { window.location.href = getDashboardUrl(role); }, 1400);
+  } catch (err) {
+    if (err.message && err.message.includes('نشط')) {
+      showToast('لديك اشتراك نشط — جارٍ التحويل للوحة التحكم', 'info');
+      setTimeout(() => { window.location.href = getDashboardUrl(user.role); }, 1200);
+    } else {
+      if (btn) { btn.disabled = false; btn.textContent = 'ابدأ 3 أشهر مجاناً ←'; }
+      showToast(err.message || 'فشل تفعيل الاشتراك', 'error');
+    }
+  }
+}
+
+async function loadPlans() {
+  try {
+    const data = await api.get('/subscriptions/plans.php');
+    allPlans = Array.isArray(data) ? data : (data.plans || []);
+    renderPlans(currentRole);
+  } catch {
+    document.getElementById('plans-grid').innerHTML =
+      '<div style="text-align:center;color:var(--muted);grid-column:1/-1;padding:2rem">تعذر تحميل الباقات — تأكد من اتصالك</div>';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', loadPlans);
+</script>
+</body>
+</html>

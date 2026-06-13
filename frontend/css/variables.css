@@ -1,0 +1,46 @@
+:root {
+  /* Colors */
+  --primary: hsl(199, 89%, 48%);
+  --primary-dark: hsl(199, 89%, 38%);
+  --primary-light: hsl(199, 89%, 95%);
+  --secondary: hsl(158, 64%, 40%);
+  --secondary-dark: hsl(158, 64%, 30%);
+  --secondary-light: hsl(158, 64%, 95%);
+
+  --background: hsl(210, 40%, 98%);
+  --card: #ffffff;
+  --border: hsl(214, 32%, 91%);
+  --muted: hsl(215, 16%, 47%);
+  --muted-bg: hsl(210, 40%, 96%);
+
+  --text: hsl(222, 47%, 11%);
+  --text-light: hsl(215, 20%, 65%);
+
+  --sidebar: hsl(222, 47%, 11%);
+  --sidebar-fg: hsl(210, 40%, 98%);
+
+  --orange: hsl(25, 95%, 53%);
+  --orange-light: hsl(25, 100%, 95%);
+  --red: hsl(0, 72%, 51%);
+  --red-light: hsl(0, 86%, 97%);
+  --green-light: hsl(142, 76%, 97%);
+
+  /* Typography */
+  --font: 'Tajawal', sans-serif;
+
+  /* Spacing */
+  --radius-sm: 0.5rem;
+  --radius: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+  --shadow: 0 4px 16px rgba(0,0,0,0.08);
+  --shadow-lg: 0 10px 40px rgba(0,0,0,0.12);
+  --shadow-primary: 0 4px 20px hsla(199,89%,48%,0.25);
+
+  /* Transitions */
+  --transition: 0.2s ease;
+}
